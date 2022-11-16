@@ -8,6 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -34,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.todocompose.data.ToDo
 import com.example.todocompose.ui.toDoItem.ToDOItem
 
 @SuppressLint("UnrememberedMutableState")
@@ -55,7 +58,7 @@ fun MainScreen() {
             .background(Color.White), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Main Screen",
+            text = "ToDo List",
             fontWeight = FontWeight.Bold,
             fontSize = 48.sp,
             textAlign = TextAlign.Center,
@@ -72,7 +75,7 @@ fun MainScreen() {
 
             singleLine = true,
             placeholder = { Text(text = "Enter Text") },
-//            label = { Text(text = "label text") },
+
 
             keyboardOptions = KeyboardOptions(
 
@@ -80,14 +83,17 @@ fun MainScreen() {
             ),
             keyboardActions = KeyboardActions(
                 onDone = { keyboardController?.hide() }
-            )
+            ), modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
 
         )
         Button(
             onClick = {
                 textToShow = txtFieldState
-                vm.addString(txtFieldState.text)
-                d("---", "list - ${vm.strings.value}")
+                vm.addToDoItem(ToDo(text=txtFieldState.text))
+                vm.addToRealtimeDatabase(ToDo(text=txtFieldState.text))
+//                d("---", "list - ${vm.strings.value}")
 //                list.add(textToShow.text)
                 txtFieldState = TextFieldValue("")
 
@@ -95,6 +101,11 @@ fun MainScreen() {
             },
         ) {
             Text(text = "button with very long name")
+
+        }
+
+        Button(onClick = {vm.readFromRealtimeDatabase() }) {
+            Text(text = "read from db")
 
         }
 
@@ -107,10 +118,10 @@ fun MainScreen() {
 //        )
 
         LazyVerticalGrid(cells = GridCells.Fixed(1), content = {
-            items(vm.strings.value.size) { i ->
+            items(vm.todoList.value.size) { i ->
                 Column() {
 
-                    ToDOItem(text = vm.strings.value[i], vm)
+                    ToDOItem(item = vm.todoList.value[i], vm)
 
                 }
 

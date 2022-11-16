@@ -18,10 +18,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.todocompose.R
+import com.example.todocompose.data.ToDo
 import com.example.todocompose.ui.MainViewModel
 
 @Composable
-fun ToDOItem(text: String, vm:MainViewModel) {
+fun ToDOItem(item: ToDo, vm:MainViewModel) {
 
     var clicked by remember{ mutableStateOf(false)}
     val animatedBlur by animateDpAsState(targetValue = if (clicked) 4.dp else 0.dp)
@@ -38,7 +39,7 @@ fun ToDOItem(text: String, vm:MainViewModel) {
 
         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
             Text(
-                text = text,
+                text = item.text,
                 color = if (!clicked) Color.Black else Color.LightGray,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 4.dp)
@@ -51,9 +52,9 @@ fun ToDOItem(text: String, vm:MainViewModel) {
                 modifier = Modifier
                     .padding(end = 4.dp)
                     .align(alignment = Alignment.CenterEnd)
-                    .clickable {
-                        vm.remove(text)
-                        d("---", "clicked to remove") }
+//                    .clickable {
+//                        vm.remove(text)
+//                        d("---", "clicked to remove") }
 
             )
 
