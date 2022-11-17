@@ -64,7 +64,10 @@ fun ToDOItem(item: ToDo, vm:MainViewModel) {
                 modifier = Modifier
                     .padding(end = 32.dp)
                     .align(alignment = Alignment.CenterEnd)
-                    .clickable { clicked = !clicked }
+                    .clickable { clicked = !clicked
+                    item.markAsDone=clicked
+                    }
+
 
             )
 

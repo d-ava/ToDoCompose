@@ -4,6 +4,7 @@ import android.util.Log.d
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.todocompose.data.ToDo
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -41,10 +42,12 @@ class MainViewModel:ViewModel() {
     }
 
      fun readFromRealtimeDatabase(){
+
         myRef.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val value = snapshot.value
                 d("---", "value from db is - $value")
+
             }
 
             override fun onCancelled(error: DatabaseError) {
