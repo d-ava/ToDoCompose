@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -22,7 +24,7 @@ import com.example.todocompose.data.ToDo
 import com.example.todocompose.ui.MainViewModel
 
 @Composable
-fun ToDOItem(item: ToDo, vm:MainViewModel) {
+fun TodoItem(item: ToDo, vm:MainViewModel) {
 
     var clicked by remember{ mutableStateOf(false)}
     val animatedBlur by animateDpAsState(targetValue = if (clicked) 4.dp else 0.dp)
@@ -33,14 +35,14 @@ fun ToDOItem(item: ToDo, vm:MainViewModel) {
             .fillMaxWidth()
             .height(48.dp)
             ,
-        border = BorderStroke(1.dp, Color.Black)
+        border = BorderStroke(1.dp, MaterialTheme.colors.primary)
 
     ) {
 
         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
             Text(
                 text = item.text,
-                color = if (!clicked) Color.Black else Color.LightGray,
+                color = if (!clicked) MaterialTheme.colors.primary else Color.LightGray,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 4.dp)
                     .blur(radius = animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded),
@@ -49,6 +51,7 @@ fun ToDOItem(item: ToDo, vm:MainViewModel) {
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_clear_24),
                 contentDescription = "close icon",
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
                 modifier = Modifier
                     .padding(end = 4.dp)
                     .align(alignment = Alignment.CenterEnd)
@@ -61,8 +64,10 @@ fun ToDOItem(item: ToDo, vm:MainViewModel) {
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_done_24),
                 contentDescription = "done icon",
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
                 modifier = Modifier
                     .padding(end = 32.dp)
+
                     .align(alignment = Alignment.CenterEnd)
                     .clickable {
                         clicked = !clicked
