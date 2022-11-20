@@ -11,9 +11,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -52,7 +50,8 @@ fun MainScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.background), horizontalAlignment = Alignment.CenterHorizontally
+            .background(MaterialTheme.colors.background),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = "ToDo List",
@@ -77,15 +76,28 @@ fun MainScreen() {
 
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(value = txtFieldState,
-                
+
                 onValueChange = { txtFieldState = it },
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.primary,
+                    cursorColor = MaterialTheme.colors.primary,
+                    leadingIconColor = MaterialTheme.colors.onPrimary,
+                    focusedLabelColor = MaterialTheme.colors.onPrimary,
+
+
+                    ),
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
+                        contentDescription = "icon"
+                    )
+
+
+                },
 
                 singleLine = true,
                 placeholder = { Text(text = "Enter Text") },
-
-
                 keyboardOptions = KeyboardOptions(
-
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
@@ -127,7 +139,6 @@ fun MainScreen() {
 //        )
 
 
-
 //        Button(
 //            onClick = {
 //                textToShow = txtFieldState
@@ -159,14 +170,12 @@ fun MainScreen() {
 //        )
 
 
-
-
     }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun EnterTextField(txtFieldState:TextFieldValue, keyboardController:SoftwareKeyboardController?){
+fun EnterTextField(txtFieldState: TextFieldValue, keyboardController: SoftwareKeyboardController?) {
     var txt = txtFieldState
     Row(modifier = Modifier.fillMaxWidth()) {
         OutlinedTextField(value = txt,

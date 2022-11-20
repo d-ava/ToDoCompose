@@ -21,9 +21,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ToDoComposeTheme() {
-
-                MainScreen()
+//whn using theme, grey areas around icons when click appear. need to check later
             }
+            MainScreen()
 
         }
     }
