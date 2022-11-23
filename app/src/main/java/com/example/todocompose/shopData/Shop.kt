@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class Shop(
     @PrimaryKey val id: Int? = null,
     val text: String,
-    val isDone: Boolean
+    var isDone: Boolean
 )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +23,7 @@ import com.example.todocompose.R
 import com.example.todocompose.shopData.Shop
 
 @Composable
-fun ShopItem(shop: Shop, delete:(shop:Shop)-> Unit) {
+fun ShopItem(shop: Shop, delete: (shop: Shop) -> Unit) {
 
     Card(
         modifier = Modifier
@@ -41,6 +42,19 @@ fun ShopItem(shop: Shop, delete:(shop:Shop)-> Unit) {
                 fontWeight = FontWeight.Bold,
                 color = Color.Red,
                 modifier = Modifier.padding(start = 8.dp)
+            )
+
+            Checkbox(
+                checked = !shop.isDone,
+                onCheckedChange = {
+
+                },
+
+                modifier = Modifier
+                    .padding(end = 32.dp)
+                    .align(
+                        Alignment.CenterEnd
+                    )
             )
 
             Image(

@@ -68,10 +68,10 @@ fun ShoppingScreen(viewModel: ShopViewModel = hiltViewModel()) {
         }
 
         LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
-            items(shoppingList.value) { shop ->
+            items(shoppingList.value.reversed()) { shop ->
                 ShopItem(shop = shop, delete = {
                     viewModel.deleteShoppingItem(it)
-                })
+                }, )
 
             }
         })
