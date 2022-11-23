@@ -1,11 +1,13 @@
 package com.example.todocompose.ui.toDoItem
 
-import android.util.Log.d
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
@@ -21,64 +23,71 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.todocompose.R
+import com.example.todocompose.TodoListEvent
 import com.example.todocompose.data.ToDo
-import com.example.todocompose.ui.MainViewModel
 
 @Composable
-fun TodoItem(item: ToDo, vm: MainViewModel) {
+fun TodoListItem(
+    todo:ToDo,
+    onEvent: (TodoListEvent) -> Unit,
+    modifier: Modifier = Modifier
+){
 
-    var clicked by remember { mutableStateOf(false) }
+    var clicked by remember{ mutableStateOf(false) }
     val animatedBlur by animateDpAsState(targetValue = if (clicked) 4.dp else 0.dp)
 
     Card(
         modifier = Modifier
             .padding(4.dp)
             .fillMaxWidth()
-            .height(48.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colors.primary)
+            .height(48.dp)
+        ,
+        border = BorderStroke(1.dp, Color.Red)
 
     ) {
 
         Box(modifier = Modifier.padding(8.dp), contentAlignment = Alignment.CenterStart) {
             Text(
-                text = item.text,
+                text = todo.text,
                 color = if (!clicked) MaterialTheme.colors.primary else Color.LightGray,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .blur(radius = animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded),
             )
-//            Text(text = "another text", modifier = Modifier.padding(start = 8.dp))
+
             Image(
-                painter = painterResource(id = R.drawable.ic_baseline_clear_24),
-                contentDescription = "close icon",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
+                painter = painterResource(id = R.drawable.ic_baseline_delete_24),
+                contentDescription = "delete icon",
+                colorFilter = ColorFilter.tint(color = Color.Red),
                 modifier = Modifier
                     .padding(end = 4.dp)
-                    .align(alignment = Alignment.CenterEnd)
-//                    .clickable {
-//                        vm.remove(text)
-//                        d("---", "clicked to remove") }
-
-            )
-
-
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_baseline_done_24),
-                contentDescription = "done icon",
-                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary),
-                modifier = Modifier
-                    .padding(end = 32.dp)
-
-                    .align(alignment = Alignment.CenterEnd)
                     .clickable {
-                        clicked = !clicked
-                        item.isDone = clicked
+                        onEvent(TodoListEvent.OnDeleteTodo(todo))
                     }
+                    .align(alignment = Alignment.CenterEnd)
 
 
             )
+            Checkbox(checked = todo.isDone, onCheckedChange = {
+                onEvent(TodoListEvent.OnDoneChange(todo, it))
+            })
+
+//            Image(
+//                painter = painterResource(id = R.drawable.ic_baseline_done_24),
+//                contentDescription = "done icon",
+//                colorFilter = ColorFilter.tint(color = Color.Red),
+//                modifier = Modifier
+//                    .padding(end = 64.dp)
+//
+//                    .align(alignment = Alignment.CenterEnd)
+//                    .clickable {
+//                        clicked = !clicked
+//                        todo.isDone=clicked
+//                    }
+//
+//
+//            )
 
         }
 

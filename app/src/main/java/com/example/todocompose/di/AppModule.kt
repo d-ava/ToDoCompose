@@ -5,6 +5,9 @@ import androidx.room.Room
 import com.example.todocompose.data.ToDoDatabase
 import com.example.todocompose.data.ToDoRepository
 import com.example.todocompose.data.ToDoRepositoryImpl
+import com.example.todocompose.shopData.ShopDatabase
+import com.example.todocompose.shopData.ShoppingListRepo
+import com.example.todocompose.shopData.ShoppingListRepoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,5 +34,21 @@ object AppModule {
         return ToDoRepositoryImpl(db.dao)
     }
 
+    @Provides
+    @Singleton
+    fun providesShopDatabase(app:Application):ShopDatabase{
+        return Room.databaseBuilder(
+            app,
+            ShopDatabase::class.java,
+            "shop_db"
+        ).build()
+
+    }
+
+    @Provides
+    @Singleton
+    fun providesShopRepo(db:ShopDatabase):ShoppingListRepo{
+        return ShoppingListRepoImpl(db.dao)
+    }
 
 }

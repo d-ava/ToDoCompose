@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.todocompose.ui.MainScreen
+import com.example.todocompose.ui.ShoppingScreen
+import com.example.todocompose.ui.TodoListScreen
 import com.example.todocompose.ui.theme.ToDoComposeTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,8 +25,9 @@ class MainActivity : ComponentActivity() {
             ToDoComposeTheme() {
 //whn using theme, grey areas around icons when click appear. need to check later
             }
-            MainScreen()
-
+//            MainScreen()
+//            TodoListScreen()
+            ShoppingScreen()
         }
     }
 }

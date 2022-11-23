@@ -128,47 +128,6 @@ fun MainScreen() {
             )
         }
 
-//        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier/*.weight(1f)*/, content = {
-//            items(vm.todoList.value.size) { i ->
-//                Column() {
-//                    TodoItem(item = vm.todoList.value[i], vm)
-//
-//                }
-//            }
-//        }
-//        )
-
-
-//        Button(
-//            onClick = {
-//                textToShow = txtFieldState
-//                vm.addToDoItem(ToDo(text = txtFieldState.text, isDone = true))
-////                vm.addToRealtimeDatabase(ToDo(text=txtFieldState.text))
-////                d("---", "list - ${vm.strings.value}")
-////                list.add(textToShow.text)
-//                txtFieldState = TextFieldValue("")
-//
-//
-//            },
-//        ) {
-//            Text(text = "button with very long name")
-//
-//        }
-        /////
-
-//        Button(onClick = { vm.readFromRealtimeDatabase() }) {
-//            Text(text = "read from db")
-//
-//        }
-
-//        Text(
-//            text = textToShow.text,
-//            textAlign = TextAlign.Start,
-//            color = Color.Blue,
-//            fontWeight = FontWeight.ExtraBold,
-//            fontSize = 24.sp
-//        )
-
 
     }
 }
