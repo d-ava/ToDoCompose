@@ -8,16 +8,20 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,9 +57,14 @@ fun ShoppingScreen(viewModel: ShopViewModel = hiltViewModel()) {
                 .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                 .clickable { pressed = !pressed }
         )
-        
-        if (shoppingList.value.isEmpty()){
+
+        if (shoppingList.value.isEmpty()) {
             Text(text = "empty shopping list, please blablabla")
+            Image(
+                painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
+                contentDescription = "shopping cart", modifier = Modifier.size(128.dp),
+                colorFilter = ColorFilter.tint(color = MaterialTheme.colors.primary)
+            )
         }
 
         LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
@@ -87,7 +96,20 @@ fun ShoppingScreen(viewModel: ShopViewModel = hiltViewModel()) {
                     )
                 },
                 singleLine = true,
-                placeholder = { Text(text = "enter text")},
+                placeholder = { Text(text = "enter text") },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        viewModel.insertShoppingItem(
+                            shopItem = Shop(
+                                text = shoppingTextFieldState.text,
+                                isDone = true
+                            )
+                        )
+                        shoppingTextFieldState = TextFieldValue("")
+
+                    }
+                ),
 
 
                 modifier = Modifier
