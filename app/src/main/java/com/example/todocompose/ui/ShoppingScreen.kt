@@ -42,6 +42,8 @@ fun ShoppingScreen(viewModel: ShopViewModel = hiltViewModel()) {
         mutableStateOf(TextFieldValue(""))
     }
 
+    Text(text = "${shoppingList.value.size}", color = Color.LightGray, fontSize = 256.sp, fontWeight = FontWeight.ExtraBold,)
+    
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally

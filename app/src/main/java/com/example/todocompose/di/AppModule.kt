@@ -5,9 +5,13 @@ import androidx.room.Room
 import com.example.todocompose.data.ToDoDatabase
 import com.example.todocompose.data.ToDoRepository
 import com.example.todocompose.data.ToDoRepositoryImpl
+import com.example.todocompose.data.repository.RTShopListRepositoryImpl
+import com.example.todocompose.domain.repository.RTShopListRepository
 import com.example.todocompose.shopData.ShopDatabase
 import com.example.todocompose.shopData.ShoppingListRepo
 import com.example.todocompose.shopData.ShoppingListRepoImpl
+import com.example.todocompose.util.Constants.RTShop
+import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,6 +21,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+//    @Provides
+//    @Singleton
+//    fun provideRTShopListRepository(database: FirebaseDatabase):RTShopListRepository =
+//        RTShopListRepositoryImpl(database)
+//
+//    @Provides
+//    @Singleton
+//    fun provideRealtimeDatabase():FirebaseDatabase = FirebaseDatabase.getInstance(RTShop) ////////////////////////////////
 
     @Provides
     @Singleton
