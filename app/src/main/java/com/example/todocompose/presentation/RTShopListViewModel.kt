@@ -43,19 +43,11 @@ class RTShopListViewModel(
 
     init {
 
-    }
-
-    fun getItemsUsingRepo() {
-        viewModelScope.launch {
-            repo.getRTShopItemsFromRepo().collect {
-                d(TAG, "collect using repo - $it")
-            }
-        }
-    }
-
-    fun getRTShopItemsCompose() {
 
     }
+
+
+
 
     private var listCompose = mutableListOf<RTShopItem>()
 
@@ -69,10 +61,6 @@ class RTShopListViewModel(
                         val listCompose2 = mutableListOf<RTShopItem>()
                         for (s in snapshot.children) {
                             val item = s.getValue(RTShopItem::class.java)!!
-//                            if (item !in _shopItems333) {
-//                                _shopItems333.add(item)
-//                                listCompose.add(item)
-//                            }
                             listCompose2.add(item)
 
                         }
@@ -93,6 +81,9 @@ class RTShopListViewModel(
         db2.child(text).removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 d(TAG, "$text is removed")
+                d(TAG, "VM list - ${shopItemsCompose.value}")
+            }else{
+                d(TAG, "cant remove item. ${task.exception?.localizedMessage}")
             }
 
 

@@ -34,69 +34,90 @@ import com.example.todocompose.shopData.Shop
 import com.example.todocompose.ui.ShopItem
 import com.example.todocompose.util.Constants.TAG
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 
 //    val shoppingList = viewModel.shoppingItems.collectAsState(initial = emptyList())
 
-    var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that the list
+    var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
-    var isDone by remember {
-        mutableStateOf(false)
-    }
+//    var isDone by remember {
+//        mutableStateOf(false)
+//    }
 
-    var pressed by remember { mutableStateOf(true) }
+    var pressed by remember { mutableStateOf(true) } // for making blur
+
     val animatedBlur by animateDpAsState(targetValue = if (pressed) listCompose2.size.dp else 0.dp)
+
     var shoppingTextFieldState by remember {
         mutableStateOf(TextFieldValue(""))
     }
-//    var shopListCompose by remember {
-//        mutableStateOf(vm._shopItems333)
-//    }
+
+    //for bottom sheet
+    val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = bottomSheetState
+    )
 
     vm.getRTShopItems333()
 
 
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            ) {
+                Text(text = "user. no user. register or login")
+            }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        },
+        sheetBackgroundColor = Color.Red,
+        sheetPeekHeight = 32.dp,
+        sheetElevation = 16.dp
+
+
     ) {
 
 
-        Text(
-            text = "Shopping List",
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            color = Color.Red,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                .clickable { pressed = !pressed }
-        )
-
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .weight(0.6f), content = {
-            items(listCompose2.size) { i ->
-                val item1 = listCompose2[i]
-                ShopItemCard(shopItem = item1, delete = {
-                    vm.removeShopItem(item1.text!!)
-                }, isDone = {
-
-                    vm.addNewShopItem(item1.text!!, isDone = !item1.done!!)
-
-//                    listCompose2 = listCompose2.mapIndexed { j, item ->
-//                        if (i == j){
-//                            item.copy(done = !item.done!!)
-//                        }else item
-//                    }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
 
-                })
-            }
-        })
+            Text(
+                text = "Shopping List",
+                fontWeight = FontWeight.Bold,
+                fontSize = 32.sp,
+                color = Color.Red,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                    .clickable { pressed = !pressed
+
+                    }
+            )
+
+
+
+
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .weight(0.6f), content = {
+                items(listCompose2.size) { i ->
+                    val item1 = listCompose2[i]
+                    ShopItemCard(shopItem = item1, delete = {
+                        vm.removeShopItem(item1.text!!)
+                    }, isDone = {
+
+                        vm.addNewShopItem(item1.text!!, isDone = !item1.done!!)
+                    })
+                }
+            })
 
 
 //        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
@@ -135,104 +156,80 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 //        }
 
 
-        Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
 
 
-            OutlinedTextField(
-                value = shoppingTextFieldState,
-                onValueChange = { shoppingTextFieldState = it },
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.primary,
-                    cursorColor = MaterialTheme.colors.primary,
-                    leadingIconColor = MaterialTheme.colors.onPrimary,
-                    focusedLabelColor = MaterialTheme.colors.onPrimary,
-                    disabledTextColor = MaterialTheme.colors.onPrimary
-                ),
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
-                        contentDescription = "icon"
-                    )
-                },
-                singleLine = true,
-                placeholder = { Text(text = "enter text") },
+                OutlinedTextField(
+                    value = shoppingTextFieldState,
+                    onValueChange = { shoppingTextFieldState = it },
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = MaterialTheme.colors.primary,
+                        cursorColor = MaterialTheme.colors.primary,
+                        leadingIconColor = MaterialTheme.colors.onPrimary,
+                        focusedLabelColor = MaterialTheme.colors.onPrimary,
+                        disabledTextColor = MaterialTheme.colors.onPrimary
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
+                            contentDescription = "icon"
+                        )
+                    },
+                    singleLine = true,
+                    placeholder = { Text(text = "enter text") },
 
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-//                        viewModel.insertShoppingItem(
-//                            shopItem = Shop(
-//                                text = shoppingTextFieldState.text,
-//                                isDone = true
-//                            )
-//                        )
-//                        shoppingTextFieldState = TextFieldValue("")
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (shoppingTextFieldState.text.isNotEmpty()) {
 
-                    }
-                ),
-
-
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .padding(8.dp)
-                    .height(64.dp)
-
-
-            )
-
-            Image(painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
-                contentDescription = "double arrow",
-                colorFilter = if (shoppingTextFieldState.text.isNotEmpty()) ColorFilter.tint(color = MaterialTheme.colors.primary) else ColorFilter.tint(
-                    color = Color.LightGray
-                ),
-                modifier = Modifier
-
-                    .size(64.dp)
-                    .fillMaxWidth(0.2f)
-                    .clickable {
-                        if (shoppingTextFieldState.text.isNotEmpty()) {
-
-                            vm.addNewShopItem(text = shoppingTextFieldState.text, isDone = false)
+                                vm.addNewShopItem(
+                                    text = shoppingTextFieldState.text,
+                                    isDone = false
+                                )
+                            }
+                            shoppingTextFieldState = TextFieldValue("")
                         }
-//                        viewModel.insertShoppingItem(
-//                            shopItem = Shop(
-//                                text = shoppingTextFieldState.text,
-//                                isDone = true
-//                            )
-//                        )
-                        shoppingTextFieldState = TextFieldValue("")
+                    ),
 
-                    }
-                    .align(Alignment.CenterVertically)
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                        .padding(8.dp)
+                        .height(64.dp)
 
-                    .padding(8.dp)
-            )
+
+                )
+
+                Image(painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
+                    contentDescription = "double arrow",
+                    colorFilter = if (shoppingTextFieldState.text.isNotEmpty()) ColorFilter.tint(
+                        color = MaterialTheme.colors.primary
+                    ) else ColorFilter.tint(
+                        color = Color.LightGray
+                    ),
+                    modifier = Modifier
+
+                        .size(64.dp)
+                        .fillMaxWidth(0.2f)
+                        .clickable {
+                            if (shoppingTextFieldState.text.isNotEmpty()) {
+
+                                vm.addNewShopItem(
+                                    text = shoppingTextFieldState.text,
+                                    isDone = false
+                                )
+                            }
+                            shoppingTextFieldState = TextFieldValue("")
+                        }
+                        .align(Alignment.CenterVertically)
+
+                        .padding(8.dp)
+                )
+
+            }
+
 
         }
-
-//        Text(fontSize = 32.sp,
-//            text = "get RT 333",
-//
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier
-//                .padding(bottom = 8.dp)
-//                .clickable {
-//                    vm.getItemsUsingRepo()
-//
-//
-//                })
-
-//        Text(fontSize = 32.sp,
-//            text = "is done",
-//
-//            fontWeight = FontWeight.Bold,
-//            modifier = Modifier
-//                .padding(bottom = 8.dp)
-//                .clickable {
-//                    isDone = !isDone
-//
-//                })
-
 
     }
 
