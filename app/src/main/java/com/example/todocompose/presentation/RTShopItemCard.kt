@@ -49,25 +49,12 @@ fun ShopItemCard(
         ) {
             Text(
                 text = shopItem.text!!,
-                fontWeight = FontWeight.Bold,
+                fontWeight = if (shopItem.done!!) FontWeight.Light else FontWeight.Bold,
                 style = if (shopItem.done!!) TextStyle(textDecoration = TextDecoration.LineThrough) else TextStyle(textDecoration = TextDecoration.None),
                 color = if (shopItem.done!!) Color.DarkGray else MaterialTheme.colors.primary,
                 modifier = Modifier.padding(start = 8.dp)
             )
 
-            //////////////////////////checkbox
-//            Checkbox(
-//                checked = false,
-//                onCheckedChange = {isDone()
-//
-//                },
-//
-//                modifier = Modifier
-//                    .padding(end = 32.dp)
-//                    .align(
-//                        Alignment.CenterEnd
-//                    )
-//            )
 
             Image(
                 painter = painterResource(id = R.drawable.ic_baseline_done_outline_24),

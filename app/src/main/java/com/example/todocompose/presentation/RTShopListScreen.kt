@@ -6,10 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -17,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -30,8 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.todocompose.R
-import com.example.todocompose.shopData.Shop
-import com.example.todocompose.ui.ShopItem
 import com.example.todocompose.util.Constants.TAG
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -42,9 +36,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 
     var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
-//    var isDone by remember {
-//        mutableStateOf(false)
-//    }
+    var buttonState by remember { mutableStateOf("one") } // test fro switching auth bottom sheet state
+
 
     var pressed by remember { mutableStateOf(true) } // for making blur
 
@@ -53,6 +46,9 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
     var shoppingTextFieldState by remember {
         mutableStateOf(TextFieldValue(""))
     }
+
+    var emailTextFieldState by remember { mutableStateOf(TextFieldValue("david@gmail.com")) }
+    var passwordTextFieldState by remember { mutableStateOf(TextFieldValue("test123")) }
 
     //for bottom sheet
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
@@ -71,7 +67,65 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                     .fillMaxWidth()
                     .height(300.dp)
             ) {
-                Text(text = "user. no user. register or login")
+
+                Column() {
+                    Text(text = "user - ${vm.user}", modifier = Modifier.padding(start = 8.dp))
+
+
+                        OutlinedTextField(
+                            value = emailTextFieldState,
+                            onValueChange = { emailTextFieldState = it },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = MaterialTheme.colors.primary,
+                                cursorColor = MaterialTheme.colors.primary,
+                                leadingIconColor = MaterialTheme.colors.onPrimary,
+                                focusedLabelColor = MaterialTheme.colors.onPrimary,
+                                disabledTextColor = MaterialTheme.colors.onPrimary
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
+                                    contentDescription = "icon"
+                                )
+                            },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .height(64.dp)
+                        )
+
+                        OutlinedTextField(
+                            value = passwordTextFieldState,
+                            onValueChange = { passwordTextFieldState = it },
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = MaterialTheme.colors.primary,
+                                cursorColor = MaterialTheme.colors.primary,
+                                leadingIconColor = MaterialTheme.colors.onPrimary,
+                                focusedLabelColor = MaterialTheme.colors.onPrimary,
+                                disabledTextColor = MaterialTheme.colors.onPrimary
+                            ),
+                            leadingIcon = {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
+                                    contentDescription = "icon"
+                                )
+                            },
+                            singleLine = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .height(64.dp)
+                        )
+                    Button(onClick = {
+                                     vm.authUser(emailTextFieldState.text, passwordTextFieldState.text )
+                        d(TAG,"auth started ${emailTextFieldState.text}, ${passwordTextFieldState.text}")
+                    }, modifier = Modifier.padding(start = 8.dp, end = 8.dp).fillMaxWidth()) { Text(text = "Auth") }
+
+
+                }
+
+
             }
 
         },
@@ -97,7 +151,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .clickable { pressed = !pressed
+                    .clickable {
+                        pressed = !pressed
 
                     }
             )
@@ -120,43 +175,13 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             })
 
 
-//        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
-//            items(listCompose2.reversed()) { shopItem ->
-//                ShopItemCard(
-//                    isDone = {
-//
-//                        isDone
-//                    },
-//                    shopItem = shopItem,
-//                    delete = {
-//                        vm.removeShopItem(shopItem.text!!)
-//                    },
-//                )
-//            }
-
-//            items(listCompose2.size) { i ->
-//                val item111 = listCompose2[i]
-//
-//                ShopItemCard(shopItem = item111, isDone = {
-//                   listCompose2 = listCompose2.mapIndexed { j, item ->
-//                       if (i == j){
-//                           item.copy(done = !item.done!!)
-//                       }else item
-//                   }
-//                }, delete = {})
-//            }
-//
-//
-//        })
-
-//        testList = testList.mapIndexed { j, item ->
-//            if (i == j){
-//                item.copy(done = !item.done!!)
-//            }else item
-//        }
 
 
-            Row(modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 32.dp)
+            ) {
 
 
                 OutlinedTextField(

@@ -10,6 +10,7 @@ import com.example.todocompose.domain.repository.RTShopListRepository
 import com.example.todocompose.util.Constants.RTShop
 import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Resource
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -27,24 +28,23 @@ class RTShopListViewModel(
     private val repo: RTShopListRepository = RTShopListRepositoryImpl()
 ) : ViewModel() {
 
+    private val auth by lazy{Firebase.auth}
+
     val shopItemsCompose: MutableState<List<RTShopItem>> = mutableStateOf(listOf())
 
     private val db = Firebase.database.reference
     private val db2 = FirebaseDatabase.getInstance().getReference(RTShop)
 
-    private var _shopListItems = mutableStateOf<List<RTShopItem>>(emptyList())
-    val shopListItems: State<List<RTShopItem>> = _shopListItems
-
-    var _shopItems333 = mutableStateListOf<RTShopItem>()
-
-    private var _lll: MutableStateFlow<RTShopItem> = MutableStateFlow(RTShopItem())
-    val lll: StateFlow<RTShopItem> = _lll
-
-
-    init {
+//    private var _shopListItems = mutableStateOf<List<RTShopItem>>(emptyList())
+//    val shopListItems: State<List<RTShopItem>> = _shopListItems
+//
+//    var _shopItems333 = mutableStateListOf<RTShopItem>()
+//
+//    private var _lll: MutableStateFlow<RTShopItem> = MutableStateFlow(RTShopItem())
+//    val lll: StateFlow<RTShopItem> = _lll
 
 
-    }
+
 
 
 
@@ -100,6 +100,19 @@ class RTShopListViewModel(
         }
     }
 
+    val user = auth.currentUser?.email
+
+    fun authUser(email:String, password:String){
+        viewModelScope.launch {
+            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
+                if (it.isSuccessful){
+                    d(TAG, "YES - ${it.result}")
+                }else{
+                    d(TAG, "NO - ${it.exception?.localizedMessage}")
+                }
+            }
+        }
+    }
 
 
 
