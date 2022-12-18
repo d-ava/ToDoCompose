@@ -100,6 +100,9 @@ authResult.value = auth.currentUser?.uid
             val shopItem = RTShopItem(text = text, done = isDone)
             db.child(RTShop).child(text).setValue(shopItem)
 
+        // when switching to registered user
+//            db.child(RTShop).child(auth.uid!!).child(text).setValue(shopItem)
+
         }
     }
 
