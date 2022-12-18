@@ -32,6 +32,8 @@ class RTShopListViewModel(
 
     val shopItemsCompose: MutableState<List<RTShopItem>> = mutableStateOf(listOf())
 
+    val authResult: MutableState<String> = mutableStateOf("")
+
     private val db = Firebase.database.reference
     private val db2 = FirebaseDatabase.getInstance().getReference(RTShop)
 
@@ -43,7 +45,9 @@ class RTShopListViewModel(
 //    private var _lll: MutableStateFlow<RTShopItem> = MutableStateFlow(RTShopItem())
 //    val lll: StateFlow<RTShopItem> = _lll
 
-
+init {
+//    authResult()
+}
 
 
 
@@ -52,6 +56,7 @@ class RTShopListViewModel(
     private var listCompose = mutableListOf<RTShopItem>()
 
     fun getRTShopItems333() {
+
 
         db2.addValueEventListener(object : ValueEventListener {
 
@@ -100,18 +105,26 @@ class RTShopListViewModel(
         }
     }
 
-    val user = auth.currentUser?.email
+    private fun authResult(){
+        authResult.value = auth.currentUser?.email!!    }
+
 
     fun authUser(email:String, password:String){
         viewModelScope.launch {
             auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
                 if (it.isSuccessful){
+                    authResult.value = auth.currentUser?.email!!
                     d(TAG, "YES - ${it.result}")
                 }else{
                     d(TAG, "NO - ${it.exception?.localizedMessage}")
                 }
             }
         }
+    }
+
+    fun signOut(){
+        auth.signOut()
+        authResult.value = auth.currentUser?.email.toString()
     }
 
 

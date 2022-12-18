@@ -69,7 +69,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             ) {
 
                 Column() {
-                    Text(text = "user - ${vm.user}", modifier = Modifier.padding(start = 8.dp))
+                    Text(text = "user - ${vm.authResult.value}", modifier = Modifier.padding(start = 8.dp, top = 4.dp))
 
 
                         OutlinedTextField(
@@ -91,7 +91,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                             singleLine = true,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(start = 8.dp, end = 8.dp, top = 16.dp)
                                 .height(64.dp)
                         )
 
@@ -122,7 +122,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                         d(TAG,"auth started ${emailTextFieldState.text}, ${passwordTextFieldState.text}")
                     }, modifier = Modifier.padding(start = 8.dp, end = 8.dp).fillMaxWidth()) { Text(text = "Auth") }
 
-
+                    Text(text = "sign out", modifier = Modifier.padding(start = 8.dp).clickable { vm.signOut() })
                 }
 
 
