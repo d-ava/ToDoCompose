@@ -32,7 +32,7 @@ import com.example.todocompose.util.Constants.TAG
 @Composable
 fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 
-//    val shoppingList = viewModel.shoppingItems.collectAsState(initial = emptyList())
+
 
     var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
@@ -56,7 +56,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
         bottomSheetState = bottomSheetState
     )
 
-    vm.getRTShopItems333()
+    //get items from realtime database
+    vm.getRTShopItems()
 
 
     BottomSheetScaffold(
@@ -69,60 +70,72 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             ) {
 
                 Column() {
-                    Text(text = "user - ${vm.authResult.value}", modifier = Modifier.padding(start = 8.dp, top = 4.dp))
+                    Text(
+                        text = "user - ${vm.authResult.value}",
+                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                    )
 
 
-                        OutlinedTextField(
-                            value = emailTextFieldState,
-                            onValueChange = { emailTextFieldState = it },
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = MaterialTheme.colors.primary,
-                                cursorColor = MaterialTheme.colors.primary,
-                                leadingIconColor = MaterialTheme.colors.onPrimary,
-                                focusedLabelColor = MaterialTheme.colors.onPrimary,
-                                disabledTextColor = MaterialTheme.colors.onPrimary
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
-                                    contentDescription = "icon"
-                                )
-                            },
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 8.dp, end = 8.dp, top = 16.dp)
-                                .height(64.dp)
-                        )
+                    OutlinedTextField(
+                        value = emailTextFieldState,
+                        onValueChange = { emailTextFieldState = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.primary,
+                            cursorColor = MaterialTheme.colors.primary,
+                            leadingIconColor = MaterialTheme.colors.onPrimary,
+                            focusedLabelColor = MaterialTheme.colors.onPrimary,
+                            disabledTextColor = MaterialTheme.colors.onPrimary
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
+                                contentDescription = "icon"
+                            )
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp, end = 8.dp, top = 16.dp)
+                            .height(64.dp)
+                    )
 
-                        OutlinedTextField(
-                            value = passwordTextFieldState,
-                            onValueChange = { passwordTextFieldState = it },
-                            colors = TextFieldDefaults.textFieldColors(
-                                textColor = MaterialTheme.colors.primary,
-                                cursorColor = MaterialTheme.colors.primary,
-                                leadingIconColor = MaterialTheme.colors.onPrimary,
-                                focusedLabelColor = MaterialTheme.colors.onPrimary,
-                                disabledTextColor = MaterialTheme.colors.onPrimary
-                            ),
-                            leadingIcon = {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
-                                    contentDescription = "icon"
-                                )
-                            },
-                            singleLine = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
-                                .height(64.dp)
-                        )
-                    Button(onClick = {
-                                     vm.authUser(emailTextFieldState.text, passwordTextFieldState.text )
-                        d(TAG,"auth started ${emailTextFieldState.text}, ${passwordTextFieldState.text}")
-                    }, modifier = Modifier.padding(start = 8.dp, end = 8.dp).fillMaxWidth()) { Text(text = "Auth") }
+                    OutlinedTextField(
+                        value = passwordTextFieldState,
+                        onValueChange = { passwordTextFieldState = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.primary,
+                            cursorColor = MaterialTheme.colors.primary,
+                            leadingIconColor = MaterialTheme.colors.onPrimary,
+                            focusedLabelColor = MaterialTheme.colors.onPrimary,
+                            disabledTextColor = MaterialTheme.colors.onPrimary
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
+                                contentDescription = "icon"
+                            )
+                        },
+                        singleLine = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .height(64.dp)
+                    )
+                    Button(
+                        onClick = {
+                            vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
+                            d(
+                                TAG,
+                                "auth started ${emailTextFieldState.text}, ${passwordTextFieldState.text}"
+                            )
+                        }, modifier = Modifier
+                            .padding(start = 8.dp, end = 8.dp)
+                            .fillMaxWidth()
+                    ) { Text(text = "Auth") }
 
-                    Text(text = "sign out", modifier = Modifier.padding(start = 8.dp).clickable { vm.signOut() })
+                    Text(text = "sign out", modifier = Modifier
+                        .padding(start = 8.dp)
+                        .clickable { vm.signOut() })
                 }
 
 
@@ -142,9 +155,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
             Text(
-                text = "Shopping List",
+                text = if (vm.authResult.value != null) "Shopping List Online" else "Shopping List Offline",
                 fontWeight = FontWeight.Bold,
                 fontSize = 32.sp,
                 color = Color.Red,
@@ -153,26 +165,32 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                     .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                     .clickable {
                         pressed = !pressed
-
-                    }
-            )
-
-
-
-
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .weight(0.6f), content = {
-                items(listCompose2.size) { i ->
-                    val item1 = listCompose2[i]
-                    ShopItemCard(shopItem = item1, delete = {
-                        vm.removeShopItem(item1.text!!)
-                    }, isDone = {
-
-                        vm.addNewShopItem(item1.text!!, isDone = !item1.done!!)
                     })
-                }
-            })
+
+
+
+
+
+            if (vm.authResult.value != null) {
+                LazyColumn(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 16.dp)
+                    .weight(0.6f), content = {
+                    items(listCompose2.size) { i ->
+                        val item1 = listCompose2[i]
+                        ShopItemCard(shopItem = item1, delete = {
+                            vm.removeShopItem(item1.text!!)
+                        }, isDone = {
+
+                            vm.addNewShopItem(item1.text!!, isDone = !item1.done!!)
+                        })
+                    }
+                })
+            } else {
+                Text(text = "here will be displayed items from Room", modifier = Modifier.weight(0.6f))
+            }
+
+
 
 
 

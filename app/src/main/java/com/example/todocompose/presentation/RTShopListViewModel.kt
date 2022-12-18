@@ -32,7 +32,7 @@ class RTShopListViewModel(
 
     val shopItemsCompose: MutableState<List<RTShopItem>> = mutableStateOf(listOf())
 
-    val authResult: MutableState<String> = mutableStateOf("")
+    val authResult: MutableState<String?> = mutableStateOf("")
 
     private val db = Firebase.database.reference
     private val db2 = FirebaseDatabase.getInstance().getReference(RTShop)
@@ -46,16 +46,16 @@ class RTShopListViewModel(
 //    val lll: StateFlow<RTShopItem> = _lll
 
 init {
-//    authResult()
+authResult.value = auth.currentUser?.uid
 }
 
 
 
 
 
-    private var listCompose = mutableListOf<RTShopItem>()
+//    private var listCompose = mutableListOf<RTShopItem>()
 
-    fun getRTShopItems333() {
+    fun getRTShopItems() {
 
 
         db2.addValueEventListener(object : ValueEventListener {
@@ -72,8 +72,6 @@ init {
                         shopItemsCompose.value = listCompose2
                     }
                 }
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -105,8 +103,7 @@ init {
         }
     }
 
-    private fun authResult(){
-        authResult.value = auth.currentUser?.email!!    }
+
 
 
     fun authUser(email:String, password:String){
@@ -114,6 +111,7 @@ init {
             auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
                 if (it.isSuccessful){
                     authResult.value = auth.currentUser?.email!!
+//                    authResult.value = auth.currentUser?.uid
                     d(TAG, "YES - ${it.result}")
                 }else{
                     d(TAG, "NO - ${it.exception?.localizedMessage}")
@@ -124,7 +122,7 @@ init {
 
     fun signOut(){
         auth.signOut()
-        authResult.value = auth.currentUser?.email.toString()
+        authResult.value = auth.currentUser?.uid
     }
 
 
