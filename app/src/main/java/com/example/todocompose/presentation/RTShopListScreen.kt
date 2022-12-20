@@ -33,10 +33,9 @@ import com.example.todocompose.util.Constants.TAG
 fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 
 
-
     var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
-    var buttonState by remember { mutableStateOf("one") } // test fro switching auth bottom sheet state
+    var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
 
 
     var pressed by remember { mutableStateOf(true) } // for making blur
@@ -57,7 +56,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
     )
 
     //get items from realtime database
-    vm.getRTShopItems()
+//    vm.getRTShopItems()
 
 
     BottomSheetScaffold(
@@ -66,16 +65,14 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
+                    .height(if (buttonState == "auth") 300.dp else 400.dp)
             ) {
 
                 Column() {
                     Text(
-                        text = "user - ${vm.authResult.value}",
+                        text = if (buttonState == "auth") "user - ${vm.authResult.value}" else "user registration",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
-
-
                     OutlinedTextField(
                         value = emailTextFieldState,
                         onValueChange = { emailTextFieldState = it },
@@ -131,11 +128,20 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                         }, modifier = Modifier
                             .padding(start = 8.dp, end = 8.dp)
                             .fillMaxWidth()
-                    ) { Text(text = "Auth") }
+                    ) { Text(text = "Log In") }
+                    Row(modifier = Modifier.padding(top = 8.dp)) {
+                        if (buttonState!="register"){
+                            Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
+                                .padding(start = 8.dp)
+                                .clickable { vm.signOut() })
+                        }
 
-                    Text(text = "sign out", modifier = Modifier
-                        .padding(start = 8.dp)
-                        .clickable { vm.signOut() })
+
+                        Text(text = if (buttonState == "auth") "REGISTER" else "AUTH", modifier = Modifier
+                            .padding(start = 16.dp)
+                            .clickable { buttonState = if (buttonState == "auth") "register" else "auth" })
+                    }
+
                 }
 
 
@@ -165,6 +171,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                     .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                     .clickable {
                         pressed = !pressed
+                        vm.getRTShopItems222()
                     })
 
 
@@ -187,13 +194,11 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                     }
                 })
             } else {
-                Text(text = "here will be displayed items from Room", modifier = Modifier.weight(0.6f))
+                Text(
+                    text = "here will be displayed items from Room",
+                    modifier = Modifier.weight(0.6f)
+                )
             }
-
-
-
-
-
 
             Row(
                 modifier = Modifier
@@ -257,7 +262,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                         .clickable {
                             if (shoppingTextFieldState.text.isNotEmpty()) {
 
-                                vm.addNewShopItem(
+                                vm.addNewShopItem222(
                                     text = shoppingTextFieldState.text,
                                     isDone = false
                                 )

@@ -10,6 +10,7 @@ import com.example.todocompose.domain.repository.RTShopListRepository
 import com.example.todocompose.util.Constants.RTShop
 import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -28,7 +29,7 @@ class RTShopListViewModel(
     private val repo: RTShopListRepository = RTShopListRepositoryImpl()
 ) : ViewModel() {
 
-    private val auth by lazy{Firebase.auth}
+    private val auth by lazy { Firebase.auth }
 
     val shopItemsCompose: MutableState<List<RTShopItem>> = mutableStateOf(listOf())
 
@@ -45,21 +46,22 @@ class RTShopListViewModel(
 //    private var _lll: MutableStateFlow<RTShopItem> = MutableStateFlow(RTShopItem())
 //    val lll: StateFlow<RTShopItem> = _lll
 
-init {
-authResult.value = auth.currentUser?.uid
-}
-
-
-
+    init {
+        authResult.value = auth.currentUser?.uid
+    }
 
 
 //    private var listCompose = mutableListOf<RTShopItem>()
 
+    fun addNewShopItem(text: String, isDone: Boolean) {
+        viewModelScope.launch {
+            val shopItem = RTShopItem(text = text, done = isDone)
+            db.child(RTShop).child(text).setValue(shopItem)
+        }
+    }
+
     fun getRTShopItems() {
-
-
         db2.addValueEventListener(object : ValueEventListener {
-
             override fun onDataChange(snapshot: DataSnapshot) {
                 viewModelScope.launch {
                     if (snapshot.exists()) {
@@ -67,7 +69,6 @@ authResult.value = auth.currentUser?.uid
                         for (s in snapshot.children) {
                             val item = s.getValue(RTShopItem::class.java)!!
                             listCompose2.add(item)
-
                         }
                         shopItemsCompose.value = listCompose2
                     }
@@ -77,7 +78,42 @@ authResult.value = auth.currentUser?.uid
             override fun onCancelled(error: DatabaseError) {
             }
         })
+    }
 
+
+    //222 when user is registered
+    fun addNewShopItem222(text: String, isDone: Boolean) {
+
+
+
+        viewModelScope.launch {
+            val shopItem = RTShopItem(text = text, done = isDone)
+            db.child(RTShop).child(auth.uid!!).child(text).setValue(shopItem)
+        }
+    }
+
+    fun getRTShopItems222() {
+        val auth1: FirebaseAuth = FirebaseAuth.getInstance()
+        val database1 = FirebaseDatabase.getInstance()
+        var databaseReference1 = database1.reference.child(RTShop)
+        val user1 = auth1.currentUser
+        val userReference1 = databaseReference1.child(user1?.uid!!)
+
+
+        userReference1.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                viewModelScope.launch {
+                    d(TAG, "snapshot = $snapshot")
+                    d(TAG, "snapshot1 = ${snapshot.value}")
+
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
     }
 
     fun removeShopItem(text: String) {
@@ -85,7 +121,7 @@ authResult.value = auth.currentUser?.uid
             if (task.isSuccessful) {
                 d(TAG, "$text is removed")
                 d(TAG, "VM list - ${shopItemsCompose.value}")
-            }else{
+            } else {
                 d(TAG, "cant remove item. ${task.exception?.localizedMessage}")
             }
 
@@ -94,40 +130,24 @@ authResult.value = auth.currentUser?.uid
     }
 
 
-    fun addNewShopItem(text: String, isDone: Boolean) {
-
+    fun authUser(email: String, password: String) {
         viewModelScope.launch {
-            val shopItem = RTShopItem(text = text, done = isDone)
-            db.child(RTShop).child(text).setValue(shopItem)
-
-        // when switching to registered user
-//            db.child(RTShop).child(auth.uid!!).child(text).setValue(shopItem)
-
-        }
-    }
-
-
-
-
-    fun authUser(email:String, password:String){
-        viewModelScope.launch {
-            auth.signInWithEmailAndPassword(email,password).addOnCompleteListener {
-                if (it.isSuccessful){
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+                if (it.isSuccessful) {
                     authResult.value = auth.currentUser?.email!!
 //                    authResult.value = auth.currentUser?.uid
                     d(TAG, "YES - ${it.result}")
-                }else{
+                } else {
                     d(TAG, "NO - ${it.exception?.localizedMessage}")
                 }
             }
         }
     }
 
-    fun signOut(){
+    fun signOut() {
         auth.signOut()
         authResult.value = auth.currentUser?.uid
     }
-
 
 
 }
