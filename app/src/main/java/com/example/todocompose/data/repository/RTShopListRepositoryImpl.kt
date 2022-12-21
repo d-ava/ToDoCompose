@@ -57,8 +57,6 @@ class RTShopListRepositoryImpl(
     }
 
     override fun getRTShopItemsFromRepo(): Flow<List<RTShopItem>> {
-
-
         return flow {
             database.getReference(RTShop)
                 .addValueEventListener(object : ValueEventListener {
@@ -69,13 +67,11 @@ class RTShopListRepositoryImpl(
                             emit(shopItems)
                         }
                     }
-
                     override fun onCancelled(error: DatabaseError) {
                         d(TAG, "failed to read value")
                     }
                 })
 
         }
-
     }
 }

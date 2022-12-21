@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -25,15 +26,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.todocompose.R
 import com.example.todocompose.util.Constants.TAG
+import com.example.todocompose.util.Screen
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
+fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: NavController) {
 
 
-    var listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
+    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
     var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
 
@@ -56,7 +59,11 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
     )
 
     //get items from realtime database
-//    vm.getRTShopItems()
+
+
+
+        if (vm.authResult.value !=null) {vm.getRTShopItems222()}
+
 
 
     BottomSheetScaffold(
@@ -65,81 +72,82 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(if (buttonState == "auth") 300.dp else 400.dp)
+                    .height(130.dp )
             ) {
 
                 Column() {
                     Text(
-                        text = if (buttonState == "auth") "user - ${vm.authResult.value}" else "user registration",
+                        text = "user - ${vm.authResult.value}",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
-                    OutlinedTextField(
-                        value = emailTextFieldState,
-                        onValueChange = { emailTextFieldState = it },
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.primary,
-                            cursorColor = MaterialTheme.colors.primary,
-                            leadingIconColor = MaterialTheme.colors.onPrimary,
-                            focusedLabelColor = MaterialTheme.colors.onPrimary,
-                            disabledTextColor = MaterialTheme.colors.onPrimary
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
-                                contentDescription = "icon"
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 8.dp, end = 8.dp, top = 16.dp)
-                            .height(64.dp)
-                    )
+//                    OutlinedTextField(
+//                        value = emailTextFieldState,
+//                        onValueChange = { emailTextFieldState = it },
+//                        colors = TextFieldDefaults.textFieldColors(
+//                            textColor = MaterialTheme.colors.primary,
+//                            cursorColor = MaterialTheme.colors.primary,
+//                            leadingIconColor = MaterialTheme.colors.onPrimary,
+//                            focusedLabelColor = MaterialTheme.colors.onPrimary,
+//                            disabledTextColor = MaterialTheme.colors.onPrimary
+//                        ),
+//                        leadingIcon = {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
+//                                contentDescription = "icon"
+//                            )
+//                        },
+//                        singleLine = true,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(start = 8.dp, end = 8.dp, top = 16.dp)
+//                            .height(64.dp)
+//                    )
 
-                    OutlinedTextField(
-                        value = passwordTextFieldState,
-                        onValueChange = { passwordTextFieldState = it },
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = MaterialTheme.colors.primary,
-                            cursorColor = MaterialTheme.colors.primary,
-                            leadingIconColor = MaterialTheme.colors.onPrimary,
-                            focusedLabelColor = MaterialTheme.colors.onPrimary,
-                            disabledTextColor = MaterialTheme.colors.onPrimary
-                        ),
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
-                                contentDescription = "icon"
-                            )
-                        },
-                        singleLine = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .height(64.dp)
-                    )
-                    Button(
-                        onClick = {
-                            vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
-                            d(
-                                TAG,
-                                "auth started ${emailTextFieldState.text}, ${passwordTextFieldState.text}"
-                            )
-                        }, modifier = Modifier
-                            .padding(start = 8.dp, end = 8.dp)
-                            .fillMaxWidth()
-                    ) { Text(text = "Log In") }
-                    Row(modifier = Modifier.padding(top = 8.dp)) {
-                        if (buttonState!="register"){
+//                    OutlinedTextField(
+//                        value = passwordTextFieldState,
+//                        onValueChange = { passwordTextFieldState = it },
+//                        colors = TextFieldDefaults.textFieldColors(
+//                            textColor = MaterialTheme.colors.primary,
+//                            cursorColor = MaterialTheme.colors.primary,
+//                            leadingIconColor = MaterialTheme.colors.onPrimary,
+//                            focusedLabelColor = MaterialTheme.colors.onPrimary,
+//                            disabledTextColor = MaterialTheme.colors.onPrimary
+//                        ),
+//                        leadingIcon = {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
+//                                contentDescription = "icon"
+//                            )
+//                        },
+//                        singleLine = true,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .padding(8.dp)
+//                            .height(64.dp)
+//                    )
+//                    Button(
+//                        onClick = {
+//                            vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
+//
+//                        }, modifier = Modifier
+//                            .padding(start = 8.dp, end = 8.dp)
+//                            .fillMaxWidth()
+//                    ) { Text(text = "Log In") }
+
+                    Row(modifier = Modifier.padding(top = 64.dp)) {
+
                             Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
                                 .padding(start = 8.dp)
                                 .clickable { vm.signOut() })
-                        }
 
 
-                        Text(text = if (buttonState == "auth") "REGISTER" else "AUTH", modifier = Modifier
+
+                        Text(text = "AUTH", modifier = Modifier
                             .padding(start = 16.dp)
-                            .clickable { buttonState = if (buttonState == "auth") "register" else "auth" })
+                            .clickable {
+
+                                navController.navigate(route = Screen.Auth.route)
+                            })
                     }
 
                 }
@@ -149,8 +157,10 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
 
         },
         sheetBackgroundColor = Color.Red,
+
         sheetPeekHeight = 32.dp,
-        sheetElevation = 16.dp
+        sheetElevation = 16.dp,
+
 
 
     ) {
@@ -189,7 +199,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel()) {
                             vm.removeShopItem(item1.text!!)
                         }, isDone = {
 
-                            vm.addNewShopItem(item1.text!!, isDone = !item1.done!!)
+                            vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
                         })
                     }
                 })
