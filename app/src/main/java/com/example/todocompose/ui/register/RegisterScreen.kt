@@ -26,7 +26,7 @@ fun RegisterScreen(navController: NavController){
         .padding(8.dp)) {
 
         Text(text = "BACK", fontWeight = FontWeight.Light, modifier = Modifier.padding(top = 16.dp).clickable {
-            navController.navigate(Screen.Home.route)
+            navController.popBackStack()
         })
 
         Text(text = "Register user - NOT READY", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))

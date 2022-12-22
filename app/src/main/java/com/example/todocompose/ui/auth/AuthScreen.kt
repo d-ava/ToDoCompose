@@ -33,7 +33,11 @@ fun AuthScreen(navController: NavController, vm: RTShopListViewModel = hiltViewM
             modifier = Modifier
                 .padding(top = 16.dp)
                 .clickable {
-                    navController.popBackStack()
+                    navController.navigate(Screen.Home.route){
+                        popUpTo(Screen.Home.route){
+                            inclusive = true
+                        }
+                    }
                 })
         Text(
             text = "Authenticate user",
@@ -99,6 +103,9 @@ fun AuthScreen(navController: NavController, vm: RTShopListViewModel = hiltViewM
         Button(
             onClick = {
                 vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
+
+
+
 
 
             }, modifier = Modifier
