@@ -9,25 +9,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
+import com.example.todocompose.presentation.RTShopListViewModel
+import com.example.todocompose.ui.ItemsProgressIndicator
 import com.example.todocompose.util.Screen
 
 @Composable
-fun RegisterScreen(navController: NavController){
+fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltViewModel()){
 
     var emailTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
     var passwordTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
     var repeatPasswordTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
 
+    val loading2 = vm.itemsLoading.value
+
+
+    ItemsProgressIndicator(show = loading2)
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(8.dp)) {
 
-        Text(text = "BACK", fontWeight = FontWeight.Light, modifier = Modifier.padding(top = 16.dp).clickable {
-            navController.popBackStack()
-        })
+
+
+        Text(text = "BACK", fontWeight = FontWeight.Light, modifier = Modifier
+            .padding(top = 16.dp)
+            .clickable {
+                navController.popBackStack()
+            })
 
         Text(text = "Register user - NOT READY", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
 
@@ -115,6 +126,7 @@ fun RegisterScreen(navController: NavController){
 
         Button(
             onClick = {
+                      vm.testLoading()
 
 
             }, modifier = Modifier

@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
+import com.example.todocompose.ui.ItemsProgressIndicator
 import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Screen
 
@@ -40,6 +41,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
     var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
 
+    val itemsLoading = vm.itemsLoading.value
 
     var pressed by remember { mutableStateOf(true) } // for making blur
 
@@ -61,21 +63,30 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
     //get items from realtime database
 
 
+    if (vm.authResult.value != null) {
+//        vm.testLoading()
+        vm.getRTShopItems333()
 
-        if (vm.authResult.value !=null) {vm.getRTShopItems222()}
+    }
 
 
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
+
+
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(130.dp )
+                    .height(130.dp)
             ) {
 
+
                 Column() {
+
+
                     Text(
                         text = "user - ${vm.authResult.value}",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
@@ -136,9 +147,9 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
                     Row(modifier = Modifier.padding(top = 64.dp)) {
 
-                            Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
-                                .padding(start = 8.dp)
-                                .clickable { vm.signOut() })
+                        Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable { vm.signOut() })
 
 
 
@@ -162,15 +173,14 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
         sheetElevation = 16.dp,
 
 
+        ) {
 
-    ) {
-
-
+//        ItemsProgressIndicator(show = true)
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            ItemsProgressIndicator(show = itemsLoading)
             Text(
                 text = if (vm.authResult.value != null) "Shopping List Online" else "Shopping List Offline",
                 fontWeight = FontWeight.Bold,
@@ -181,7 +191,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                     .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                     .clickable {
                         pressed = !pressed
-                        vm.getRTShopItems222()
+                        vm.getRTShopItems333()
                     })
 
 
@@ -189,6 +199,9 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
 
             if (vm.authResult.value != null) {
+
+
+
                 LazyColumn(modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 16.dp)
@@ -276,6 +289,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                                     text = shoppingTextFieldState.text,
                                     isDone = false
                                 )
+                                vm.testLoading()
                             }
                             shoppingTextFieldState = TextFieldValue("")
                         }
@@ -284,10 +298,12 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         .padding(8.dp)
                 )
 
+
             }
 
 
         }
+
 
     }
 
