@@ -7,7 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -64,15 +64,15 @@ fun MainScreen() {
                 .clickable { checked = !checked }
         )
 
-        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(1f), content = {
-            items(vm.todoList.value.size) { i ->
-                Column() {
-                    TodoItem(item = vm.todoList.value[i], vm)
-
-                }
-            }
-        }
-        )
+//        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(1f), content = {
+//            items(vm.todoList.value.size) { i ->
+//                Column() {
+//                    TodoItem(item = vm.todoList.value[i], vm)
+//
+//                }
+//            }
+//        }
+//        )
 
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(value = txtFieldState,

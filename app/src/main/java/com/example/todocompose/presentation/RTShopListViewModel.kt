@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -67,7 +68,7 @@ class RTShopListViewModel(
 //        getRTShopItems222()
     }
 
-    fun testLoading(){
+    fun testLoading() {
         viewModelScope.launch {
             itemsLoading.value = true
             delay(3000)
@@ -83,26 +84,6 @@ class RTShopListViewModel(
             db.child(RTShop).child(text).setValue(shopItem)
         }
     }
-
-//    fun getRTShopItems() {
-//        db2.addValueEventListener(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                viewModelScope.launch {
-//                    if (snapshot.exists()) {
-//                        val listCompose2 = mutableListOf<RTShopItem>()
-//                        for (s in snapshot.children) {
-//                            val item = s.getValue(RTShopItem::class.java)!!
-//                            listCompose2.add(item)
-//                        }
-//                        shopItemsCompose.value = listCompose2
-//                    }
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//            }
-//        })
-//    }
 
 
     //222 when user is registered
@@ -151,15 +132,21 @@ class RTShopListViewModel(
         val user1 = auth1.currentUser
         val userReference1 = databaseReference1.child(user1?.uid!!)
 
+        viewModelScope.launch {
 
-        userReference1.addValueEventListener(object : ValueEventListener {
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                viewModelScope.launch {
+
+            userReference1.addValueEventListener(object : ValueEventListener {
+
+
+                override fun onDataChange(snapshot: DataSnapshot) {
+
+
+                    val test = snapshot.value
+                    d(TAG, "snaphot from vm - $test")
 
                     try {
-                        d(TAG, "LOADING start")
-//                        itemsLoading.value = true
+
                         if (snapshot.exists()) {
                             val listCompose222 = mutableListOf<RTShopItem>()
                             for (s in snapshot.children) {
@@ -167,27 +154,24 @@ class RTShopListViewModel(
                                 listCompose222.add(item)
                             }
                             shopItemsCompose.value = listCompose222
-                            d(TAG, "LOADING items")
-                        }
-//                        itemsLoading.value = false
-                        d(TAG, "LOADING stop")
 
-                    }catch (e: IOException){
+                        }
+
+
+                    } catch (e: IOException) {
                         d(TAG, e.message ?: "unknown error")
                     }
 
 
+                }
+
+                override fun onCancelled(error: DatabaseError) {
 
                 }
-            }
+            })
 
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
+                    }
     }
-
-
 
 
     fun removeShopItem(text: String) {

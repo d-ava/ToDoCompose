@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.todocompose.test.ui.screen.RealtimeDBScreen
 import com.example.todocompose.ui.auth.AuthScreen
 import com.example.todocompose.ui.register.RegisterScreen
 import com.example.todocompose.ui.theme.ToDoComposeTheme
@@ -27,8 +28,8 @@ class MainActivity : ComponentActivity() {
 //                RTShopListScreen()
 //                AuthScreen()
 //            RegisterScreen()
-                
-                SetupNavGraph(navController = navController)
+                RealtimeDBScreen()
+//                SetupNavGraph(navController = navController)
             }
 
         }

@@ -5,7 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
@@ -69,14 +69,14 @@ fun ShoppingScreen(viewModel: ShopViewModel = hiltViewModel()) {
             )
         }
 
-        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
-            items(shoppingList.value.reversed()) { shop ->
-                ShopItem(shop = shop, delete = {
-                    viewModel.deleteShoppingItem(it)
-                }, )
-
-            }
-        })
+//        LazyVerticalGrid(cells = GridCells.Fixed(1), modifier = Modifier.weight(0.6f), content = {
+//            items(shoppingList.value.reversed()) { shop ->
+//                ShopItem(shop = shop, delete = {
+//                    viewModel.deleteShoppingItem(it)
+//                }, )
+//
+//            }
+//        })
 
         Row(modifier = Modifier.fillMaxWidth()) {
 

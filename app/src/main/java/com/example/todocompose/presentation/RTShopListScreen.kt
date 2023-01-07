@@ -71,10 +71,10 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
 
 
+
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
-
 
 
             Box(
@@ -83,7 +83,6 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                     .height(130.dp)
             ) {
 
-
                 Column() {
 
 
@@ -91,59 +90,6 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         text = "user - ${vm.authResult.value}",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
-//                    OutlinedTextField(
-//                        value = emailTextFieldState,
-//                        onValueChange = { emailTextFieldState = it },
-//                        colors = TextFieldDefaults.textFieldColors(
-//                            textColor = MaterialTheme.colors.primary,
-//                            cursorColor = MaterialTheme.colors.primary,
-//                            leadingIconColor = MaterialTheme.colors.onPrimary,
-//                            focusedLabelColor = MaterialTheme.colors.onPrimary,
-//                            disabledTextColor = MaterialTheme.colors.onPrimary
-//                        ),
-//                        leadingIcon = {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_baseline_person_outline_24),
-//                                contentDescription = "icon"
-//                            )
-//                        },
-//                        singleLine = true,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(start = 8.dp, end = 8.dp, top = 16.dp)
-//                            .height(64.dp)
-//                    )
-
-//                    OutlinedTextField(
-//                        value = passwordTextFieldState,
-//                        onValueChange = { passwordTextFieldState = it },
-//                        colors = TextFieldDefaults.textFieldColors(
-//                            textColor = MaterialTheme.colors.primary,
-//                            cursorColor = MaterialTheme.colors.primary,
-//                            leadingIconColor = MaterialTheme.colors.onPrimary,
-//                            focusedLabelColor = MaterialTheme.colors.onPrimary,
-//                            disabledTextColor = MaterialTheme.colors.onPrimary
-//                        ),
-//                        leadingIcon = {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_baseline_lock_open_24),
-//                                contentDescription = "icon"
-//                            )
-//                        },
-//                        singleLine = true,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(8.dp)
-//                            .height(64.dp)
-//                    )
-//                    Button(
-//                        onClick = {
-//                            vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
-//
-//                        }, modifier = Modifier
-//                            .padding(start = 8.dp, end = 8.dp)
-//                            .fillMaxWidth()
-//                    ) { Text(text = "Log In") }
 
                     Row(modifier = Modifier.padding(top = 64.dp)) {
 
@@ -175,135 +121,128 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
         ) {
 
-//        ItemsProgressIndicator(show = true)
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+
+
             ItemsProgressIndicator(show = itemsLoading)
-            Text(
-                text = if (vm.authResult.value != null) "Shopping List Online" else "Shopping List Offline",
-                fontWeight = FontWeight.Bold,
-                fontSize = 32.sp,
-                color = Color.Red,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
-                    .clickable {
-                        pressed = !pressed
-                        vm.getRTShopItems333()
-                    })
-
-
-
-
-
-            if (vm.authResult.value != null) {
-
-
-
-                LazyColumn(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp)
-                    .weight(0.6f), content = {
-                    items(listCompose2.size) { i ->
-                        val item1 = listCompose2[i]
-                        ShopItemCard(shopItem = item1, delete = {
-                            vm.removeShopItem(item1.text!!)
-                        }, isDone = {
-
-                            vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
-                        })
-                    }
-                })
-            } else {
-                Text(
-                    text = "here will be displayed items from Room",
-                    modifier = Modifier.weight(0.6f)
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 32.dp)
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-
-                OutlinedTextField(
-                    value = shoppingTextFieldState,
-                    onValueChange = { shoppingTextFieldState = it },
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = MaterialTheme.colors.primary,
-                        cursorColor = MaterialTheme.colors.primary,
-                        leadingIconColor = MaterialTheme.colors.onPrimary,
-                        focusedLabelColor = MaterialTheme.colors.onPrimary,
-                        disabledTextColor = MaterialTheme.colors.onPrimary
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
-                            contentDescription = "icon"
-                        )
-                    },
-                    singleLine = true,
-                    placeholder = { Text(text = "enter text") },
-
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (shoppingTextFieldState.text.isNotEmpty()) {
-
-                                vm.addNewShopItem(
-                                    text = shoppingTextFieldState.text,
-                                    isDone = false
-                                )
-                            }
-                            shoppingTextFieldState = TextFieldValue("")
-                        }
-                    ),
-
+                Text(
+                    text = if (vm.authResult.value != null) "Shopping List Online" else "Shopping List Offline",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 32.sp,
+                    color = Color.Red,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
-                        .fillMaxWidth(0.8f)
-                        .padding(8.dp)
-                        .height(64.dp)
-
-
-                )
-
-                Image(painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
-                    contentDescription = "double arrow",
-                    colorFilter = if (shoppingTextFieldState.text.isNotEmpty()) ColorFilter.tint(
-                        color = MaterialTheme.colors.primary
-                    ) else ColorFilter.tint(
-                        color = Color.LightGray
-                    ),
-                    modifier = Modifier
-
-                        .size(64.dp)
-                        .fillMaxWidth(0.2f)
+                        .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                         .clickable {
-                            if (shoppingTextFieldState.text.isNotEmpty()) {
+                            pressed = !pressed
+                            vm.getRTShopItems333()
+                        })
 
-                                vm.addNewShopItem222(
-                                    text = shoppingTextFieldState.text,
-                                    isDone = false
-                                )
-                                vm.testLoading()
-                            }
-                            shoppingTextFieldState = TextFieldValue("")
+
+
+
+
+                if (vm.authResult.value != null) {
+
+
+                    LazyColumn(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 64.dp)
+                        .weight(0.6f), content = {
+                        items(listCompose2.size) { i ->
+                            val item1 = listCompose2[i]
+                            ShopItemCard(shopItem = item1, delete = {
+                                vm.removeShopItem(item1.text!!)
+                            }, isDone = {
+
+                                vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
+                            })
                         }
-                        .align(Alignment.CenterVertically)
+                    })
+                } else {
+                    Text(
+                        text = "here will be displayed items from Room",
+                        modifier = Modifier.weight(0.6f)
+                    )
+                }
 
-                        .padding(8.dp)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 32.dp)
+                ) {
+
+
+                    OutlinedTextField(
+                        value = shoppingTextFieldState,
+                        onValueChange = { shoppingTextFieldState = it },
+                        colors = TextFieldDefaults.textFieldColors(
+                            textColor = MaterialTheme.colors.primary,
+                            cursorColor = MaterialTheme.colors.primary,
+                            leadingIconColor = MaterialTheme.colors.onPrimary,
+                            focusedLabelColor = MaterialTheme.colors.onPrimary,
+                            disabledTextColor = MaterialTheme.colors.onPrimary
+                        ),
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_shopping_cart_24),
+                                contentDescription = "icon"
+                            )
+                        },
+                        singleLine = true,
+                        placeholder = { Text(text = "enter text") },
+
+                        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+
+                            }
+                        ),
+
+                        modifier = Modifier
+                            .fillMaxWidth(0.8f)
+                            .padding(8.dp)
+                            .height(64.dp)
+
+
+                    )
+
+                    Image(painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
+                        contentDescription = "double arrow",
+                        colorFilter = if (shoppingTextFieldState.text.isNotEmpty()) ColorFilter.tint(
+                            color = MaterialTheme.colors.primary
+                        ) else ColorFilter.tint(
+                            color = Color.LightGray
+                        ),
+                        modifier = Modifier
+
+                            .size(64.dp)
+                            .fillMaxWidth(0.2f)
+                            .clickable {
+                                if (shoppingTextFieldState.text.isNotEmpty()) {
+
+                                    vm.addNewShopItem222(
+                                        text = shoppingTextFieldState.text,
+                                        isDone = false
+                                    )
+                                }
+                                shoppingTextFieldState = TextFieldValue("")
+                            }
+                            .align(Alignment.CenterVertically)
+                            .padding(8.dp)
+                    )
+
+
+                }
 
 
             }
-
-
         }
-
 
     }
 

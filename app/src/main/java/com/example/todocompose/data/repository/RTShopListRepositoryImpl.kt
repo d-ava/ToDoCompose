@@ -1,11 +1,13 @@
 package com.example.todocompose.data.repository
 
 import android.util.Log.d
+import androidx.lifecycle.viewModelScope
 import com.example.todocompose.domain.model.RTShopItem
 import com.example.todocompose.domain.repository.RTShopListRepository
 import com.example.todocompose.util.Constants.RTShop
 import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -18,11 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class RTShopListRepositoryImpl(
 
@@ -39,11 +39,7 @@ class RTShopListRepositoryImpl(
             db3.addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                        for (s in snapshot.children) {
-                            val item = s.getValue(RTShopItem::class.java)!!
-                            listRepo.add(item)
-//                            emit(listRepo)
-                        }
+
 
 
                 }
@@ -67,6 +63,7 @@ class RTShopListRepositoryImpl(
                             emit(shopItems)
                         }
                     }
+
                     override fun onCancelled(error: DatabaseError) {
                         d(TAG, "failed to read value")
                     }
@@ -74,4 +71,7 @@ class RTShopListRepositoryImpl(
 
         }
     }
+
+
+
 }

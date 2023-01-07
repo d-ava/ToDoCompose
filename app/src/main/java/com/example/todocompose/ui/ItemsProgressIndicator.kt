@@ -15,12 +15,13 @@ fun ItemsProgressIndicator(show: Boolean) {
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = 48.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(48.dp)
                     .alpha(0.8f),
                 color = Color.Red,
                 strokeWidth = 8.dp,
