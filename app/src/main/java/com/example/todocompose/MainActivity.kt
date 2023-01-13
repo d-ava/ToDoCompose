@@ -9,12 +9,22 @@ import com.example.todocompose.test.ui.screen.RealtimeDBScreen
 import com.example.todocompose.ui.auth.AuthScreen
 import com.example.todocompose.ui.register.RegisterScreen
 import com.example.todocompose.ui.theme.ToDoComposeTheme
+import com.example.todocompose.util.Constants
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
+
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    lateinit var navController: NavHostController
+    private lateinit var navController: NavHostController
+
+
+
 
 
 
@@ -28,8 +38,10 @@ class MainActivity : ComponentActivity() {
 //                RTShopListScreen()
 //                AuthScreen()
 //            RegisterScreen()
-                RealtimeDBScreen()
-//                SetupNavGraph(navController = navController)
+//                RealtimeDBScreen()
+
+
+                SetupNavGraph(navController = navController)
             }
 
         }

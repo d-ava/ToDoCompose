@@ -22,14 +22,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-//    @Provides
-//    @Singleton
-//    fun provideRTShopListRepository(database: FirebaseDatabase):RTShopListRepository =
-//        RTShopListRepositoryImpl(database)
-//
-//    @Provides
-//    @Singleton
-//    fun provideRealtimeDatabase():FirebaseDatabase = FirebaseDatabase.getInstance(RTShop) ////////////////////////////////
+
 
     @Provides
     @Singleton

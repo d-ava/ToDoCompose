@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -28,13 +29,20 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
+import com.example.todocompose.domain.model.RTShopItem
+import com.example.todocompose.test.data.model.RealtimeDBUser
+import com.example.todocompose.test.ui.screen.RealtimeDBListItem
 import com.example.todocompose.ui.ItemsProgressIndicator
 import com.example.todocompose.util.Constants.TAG
+import com.example.todocompose.util.ResourceToDo
 import com.example.todocompose.util.Screen
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: NavController) {
+
+    //thats it
+    val itemState by vm.itemState.collectAsState()
 
 
     val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
@@ -44,6 +52,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
     val itemsLoading = vm.itemsLoading.value
 
     var pressed by remember { mutableStateOf(true) } // for making blur
+
 
     val animatedBlur by animateDpAsState(targetValue = if (pressed) listCompose2.size.dp else 0.dp)
 
@@ -65,7 +74,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
     if (vm.authResult.value != null) {
 //        vm.testLoading()
-        vm.getRTShopItems333()
+//        vm.getRTShopItems333()
 
     }
 
@@ -124,7 +133,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
         Box(modifier = Modifier.fillMaxWidth()) {
 
 
-            ItemsProgressIndicator(show = itemsLoading)
+//            ItemsProgressIndicator(show = itemsLoading)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -140,7 +149,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                         .clickable {
                             pressed = !pressed
-                            vm.getRTShopItems333()
+//                            vm.getRTShopItems555()
+
                         })
 
 
@@ -149,21 +159,57 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
                 if (vm.authResult.value != null) {
 
-
-                    LazyColumn(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 64.dp)
-                        .weight(0.6f), content = {
-                        items(listCompose2.size) { i ->
-                            val item1 = listCompose2[i]
-                            ShopItemCard(shopItem = item1, delete = {
-                                vm.removeShopItem(item1.text!!)
-                            }, isDone = {
-
-                                vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
-                            })
+                    /////////////////////////////////////////////
+//                    here//
+                    when {
+                        itemState.isLoading -> {
+                            ItemsProgressIndicator(show = true)
                         }
-                    })
+                        !itemState.isLoading && !itemState.errorMsg.isNullOrEmpty() -> {
+                            Text(text = itemState.errorMsg!!)
+                        }
+                        itemState.data.isNullOrEmpty() -> {
+                            Text(text = "Empty")
+                        }
+                        !itemState.data.isNullOrEmpty() -> {
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 64.dp)
+                                    .weight(0.6f)
+                            ) {
+                                items(itemState.data!!) { item ->
+                                    ShopItemCard(shopItem = item!!, delete = { }) {
+
+                                    }
+
+
+                                }
+                            }
+                        }
+
+                    }
+
+
+                    ///////////////////
+
+
+//                    LazyColumn(modifier = Modifier
+//                        .fillMaxSize()
+//                        .padding(top = 64.dp)
+//                        .weight(0.6f), content = {
+//                        items(listCompose2.size) { i ->
+//                            val item1 = listCompose2[i]
+//                            ShopItemCard(shopItem = item1, delete = {
+//                                vm.removeShopItem(item1.text!!)
+//                            }, isDone = {
+//
+//                                vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
+//                            })
+//                        }
+//                    })
+
+
                 } else {
                     Text(
                         text = "here will be displayed items from Room",

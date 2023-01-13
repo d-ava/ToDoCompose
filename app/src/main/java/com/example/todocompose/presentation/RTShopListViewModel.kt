@@ -1,5 +1,6 @@
 package com.example.todocompose.presentation
 
+import android.system.Os.close
 import android.util.Log.d
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -8,10 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.todocompose.data.repository.RTShopListRepositoryImpl
 import com.example.todocompose.domain.model.RTShopItem
 import com.example.todocompose.domain.repository.RTShopListRepository
+import com.example.todocompose.ui.state.RTShopItemState
 import com.example.todocompose.util.Constants.RTShop
 import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Resource
 import com.example.todocompose.util.Resource2
+import com.example.todocompose.util.ResourceToDo
 import com.example.todocompose.util.Screen
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -23,9 +26,10 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -34,7 +38,7 @@ class RTShopListViewModel(
     private val repo: RTShopListRepository = RTShopListRepositoryImpl()
 ) : ViewModel() {
 
-    private val auth by lazy { Firebase.auth }
+    val auth by lazy { Firebase.auth }
 
 //    private val auth1: FirebaseAuth = FirebaseAuth.getInstance()
 //    private val database1 = FirebaseDatabase.getInstance()
@@ -65,8 +69,48 @@ class RTShopListViewModel(
     init {
 
         authResult.value = auth.currentUser?.uid
-//        getRTShopItems222()
+
+
+        getRTShopItems555()
+
     }
+
+
+    private val _itemsState = MutableStateFlow(RTShopItemState())
+    val itemState: StateFlow<RTShopItemState> = _itemsState.asStateFlow()
+
+
+
+
+    fun getRTShopItems555() = viewModelScope.launch {
+
+        repo.getRTShopItems777().collect { result ->
+            when (result) {
+                is ResourceToDo.Success -> {
+                    _itemsState.update {
+                        it.copy(
+                            data = result.data,
+                            isLoading = false,
+                            errorMsg = null
+                        )
+                    }
+
+                    d(TAG, "from vm - result data - ${result.data}")
+
+                }
+                is ResourceToDo.Error -> {
+                    _itemsState.update {
+                        it.copy(data = null, isLoading = false, errorMsg = result.exception.message)
+                    }
+                }
+                is ResourceToDo.Loading -> {
+                    _itemsState.update { it.copy(data = null, isLoading = true, errorMsg = null) }
+
+                }
+            }
+        }
+    }
+
 
     fun testLoading() {
         viewModelScope.launch {
@@ -135,7 +179,6 @@ class RTShopListViewModel(
         viewModelScope.launch {
 
 
-
             userReference1.addValueEventListener(object : ValueEventListener {
 
 
@@ -170,7 +213,7 @@ class RTShopListViewModel(
                 }
             })
 
-                    }
+        }
     }
 
 
