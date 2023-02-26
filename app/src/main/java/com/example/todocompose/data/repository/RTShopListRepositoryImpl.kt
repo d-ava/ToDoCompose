@@ -32,7 +32,7 @@ class RTShopListRepositoryImpl(
 
     override suspend fun getRTShopItems777(): Flow<ResourceToDo<List<RTShopItem?>>> {
         return callbackFlow {
-            kotlinx.coroutines.delay(500)
+            kotlinx.coroutines.delay(1000)
 
             trySend(ResourceToDo.Loading)
 

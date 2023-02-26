@@ -1,6 +1,5 @@
 package com.example.todocompose.presentation
 
-import android.util.Log.d
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -15,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -29,12 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
-import com.example.todocompose.domain.model.RTShopItem
-import com.example.todocompose.test.data.model.RealtimeDBUser
-import com.example.todocompose.test.ui.screen.RealtimeDBListItem
 import com.example.todocompose.ui.ItemsProgressIndicator
-import com.example.todocompose.util.Constants.TAG
-import com.example.todocompose.util.ResourceToDo
 import com.example.todocompose.util.Screen
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -54,7 +47,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
     var pressed by remember { mutableStateOf(true) } // for making blur
 
 
-    val animatedBlur by animateDpAsState(targetValue = if (pressed) listCompose2.size.dp else 0.dp)
+    val animatedBlur by animateDpAsState(targetValue = if (pressed) 4.dp/*listCompose2.size.dp*/ else 0.dp)
 
     var shoppingTextFieldState by remember {
         mutableStateOf(TextFieldValue(""))
@@ -72,13 +65,11 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
     //get items from realtime database
 
 
-    if (vm.authResult.value != null) {
+//    if (vm.authResult.value != null) {
 //        vm.testLoading()
 //        vm.getRTShopItems333()
 
-    }
-
-
+//    }
 
 
     BottomSheetScaffold(
@@ -106,8 +97,6 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                             .padding(start = 8.dp)
                             .clickable { vm.signOut() })
 
-
-
                         Text(text = "AUTH", modifier = Modifier
                             .padding(start = 16.dp)
                             .clickable {
@@ -133,20 +122,20 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
         Box(modifier = Modifier.fillMaxWidth()) {
 
 
-//            ItemsProgressIndicator(show = itemsLoading)
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
                 Text(
-                    text = if (vm.authResult.value != null) "Shopping List Online" else "Shopping List Offline",
+                    text = if (vm.authResult.value != null) "買い物リスト-shopping list" else "NULL",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                    color = Color.Red,
+                    fontSize = 24.sp,
+                    color = Color.Black,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
+                        .padding(top = 16.dp)
                         .clickable {
                             pressed = !pressed
 //                            vm.getRTShopItems555()
@@ -163,6 +152,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 //                    here//
                     when {
                         itemState.isLoading -> {
+                            Text(text = "Loading")
                             ItemsProgressIndicator(show = true)
                         }
                         !itemState.isLoading && !itemState.errorMsg.isNullOrEmpty() -> {
@@ -179,9 +169,11 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                                     .weight(0.6f)
                             ) {
                                 items(itemState.data!!) { item ->
-                                    ShopItemCard(shopItem = item!!, delete = { }) {
-
-                                    }
+                                    ShopItemCard(shopItem = item!!, delete = {
+                                        vm.removeShopItem(item.text!!)
+                                    }, isDone = {
+                                        vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
+                                    })
 
 
                                 }

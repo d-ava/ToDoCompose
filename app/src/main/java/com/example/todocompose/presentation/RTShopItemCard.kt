@@ -54,9 +54,9 @@ fun ShopItemCard(
             Text(
                 text = shopItem.text!!,
                 fontWeight = if (shopItem.done!!) FontWeight.Light else FontWeight.Bold,
-                style = if (shopItem.done!!) TextStyle(textDecoration = TextDecoration.LineThrough) else TextStyle(
-                    textDecoration = TextDecoration.None
-                ),
+//                style = if (shopItem.done!!) TextStyle(textDecoration = TextDecoration.LineThrough) else TextStyle(
+//                    textDecoration = TextDecoration.None
+//                ),
                 color = if (shopItem.done!!) Color.DarkGray else MaterialTheme.colors.primary,
                 modifier = Modifier.padding(start = 8.dp)
             )

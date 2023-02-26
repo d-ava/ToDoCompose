@@ -82,7 +82,7 @@ class RTShopListViewModel(
 
 
 
-    fun getRTShopItems555() = viewModelScope.launch {
+    private fun getRTShopItems555() = viewModelScope.launch {
 
         repo.getRTShopItems777().collect { result ->
             when (result) {
