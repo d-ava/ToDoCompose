@@ -38,7 +38,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
     //thats it
     val itemState by vm.itemStateToDo.collectAsState()
-    d(TAG, "from composable 000000 ${itemState}")
+
 
 
 //    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
@@ -65,14 +65,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
         bottomSheetState = bottomSheetState
     )
 
-    //get items from realtime database
 
-
-//    if (vm.authResult.value != null) {
-//        vm.testLoading()
-//        vm.getRTShopItems333()
-
-//    }
 
 
     BottomSheetScaffold(
@@ -90,7 +83,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
 
                     Text(
-                        text = "user - ${vm.authResult.value}",
+                        text ="not working yet", //"user - ${vm.authResult.value}",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
 
@@ -98,7 +91,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
                         Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
                             .padding(start = 8.dp)
-                            .clickable { vm.signOut() })
+                            .clickable { })
 
                         Text(text = "AUTH", modifier = Modifier
                             .padding(start = 16.dp)

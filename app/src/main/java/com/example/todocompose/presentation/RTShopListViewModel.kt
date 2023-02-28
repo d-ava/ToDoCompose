@@ -70,8 +70,8 @@ class RTShopListViewModel(
     }
 
 
-    private val _itemsState = MutableStateFlow(RTShopItemState())
-    val itemState: StateFlow<RTShopItemState> = _itemsState.asStateFlow()
+//    private val _itemsState = MutableStateFlow(RTShopItemState())
+//    val itemState: StateFlow<RTShopItemState> = _itemsState.asStateFlow()
 
     private val _itemsStateToDo = MutableStateFlow<List<RTShopItem?>>(emptyList())
     val itemStateToDo: StateFlow<List<RTShopItem?>> = _itemsStateToDo.asStateFlow()
@@ -87,20 +87,10 @@ class RTShopListViewModel(
                 val items = snapshot.children.map {
                     it.getValue<RTShopItem>()
                 }
-                d(TAG, "from vmvm - $items")
 
                 _itemsStateToDo.value = items
 
-               /* _itemsState.update {
-                    it.copy(
-                        data = it.data,
-                        isLoading = false,
-                        errorMsg = null
-                    )
-                }*/
-
             }
-
             override fun onCancelled(error: DatabaseError) {
                 d(TAG, "from repo ${error.message}")
 
@@ -111,34 +101,34 @@ class RTShopListViewModel(
 
     }
 
-    private fun getRTShopItems555() = viewModelScope.launch {
-
-        repo.getRTShopItems777().collect { result ->
-            when (result) {
-                is ResourceToDo.Success -> {
-                    _itemsState.update {
-                        it.copy(
-                            data = result.data,
-                            isLoading = false,
-                            errorMsg = null
-                        )
-                    }
-
-                    d(TAG, "from vm - result data - ${result.data}")
-
-                }
-                is ResourceToDo.Error -> {
-                    _itemsState.update {
-                        it.copy(data = null, isLoading = false, errorMsg = result.exception.message)
-                    }
-                }
-                is ResourceToDo.Loading -> {
-                    _itemsState.update { it.copy(data = null, isLoading = true, errorMsg = null) }
-
-                }
-            }
-        }
-    }
+//    private fun getRTShopItems555() = viewModelScope.launch {
+//
+//        repo.getRTShopItems777().collect { result ->
+//            when (result) {
+//                is ResourceToDo.Success -> {
+//                    _itemsState.update {
+//                        it.copy(
+//                            data = result.data,
+//                            isLoading = false,
+//                            errorMsg = null
+//                        )
+//                    }
+//
+//                    d(TAG, "from vm - result data - ${result.data}")
+//
+//                }
+//                is ResourceToDo.Error -> {
+//                    _itemsState.update {
+//                        it.copy(data = null, isLoading = false, errorMsg = result.exception.message)
+//                    }
+//                }
+//                is ResourceToDo.Loading -> {
+//                    _itemsState.update { it.copy(data = null, isLoading = true, errorMsg = null) }
+//
+//                }
+//            }
+//        }
+//    }
 
 
     fun testLoading() {
@@ -256,8 +246,8 @@ class RTShopListViewModel(
 
     // auth result
 //    val userLogInStatus: MutableState<Resource2<AuthResult>> = mutableStateOf()
-    private val _userLogInStatus: MutableSharedFlow<Resource2<AuthResult>> = MutableSharedFlow()
-    val userLogInStatus: SharedFlow<Resource2<AuthResult>> = _userLogInStatus
+//    private val _userLogInStatus: MutableSharedFlow<Resource2<AuthResult>> = MutableSharedFlow()
+//    val userLogInStatus: SharedFlow<Resource2<AuthResult>> = _userLogInStatus
 
 
 //    fun authUser222(email: String, password: String) {
@@ -277,25 +267,25 @@ class RTShopListViewModel(
 //        }
 //    }
 
-    fun authUser(email: String, password: String) {
-        viewModelScope.launch {
-            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    authResult.value = auth.currentUser?.email!!
-
-                    d(TAG, "YES - ${it.result}")
-                } else {
-                    d(TAG, "NO - ${it.exception?.localizedMessage}")
-                }
-            }
-
-        }
-    }
-
-    fun signOut() {
-        auth.signOut()
-        authResult.value = auth.currentUser?.uid
-    }
+//    fun authUser(email: String, password: String) {
+//        viewModelScope.launch {
+//            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+//                if (it.isSuccessful) {
+//                    authResult.value = auth.currentUser?.email!!
+//
+//                    d(TAG, "YES - ${it.result}")
+//                } else {
+//                    d(TAG, "NO - ${it.exception?.localizedMessage}")
+//                }
+//            }
+//
+//        }
+//    }
+//
+//    fun signOut() {
+//        auth.signOut()
+//        authResult.value = auth.currentUser?.uid
+//    }
 
 
 }
