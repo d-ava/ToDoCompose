@@ -1,5 +1,6 @@
 package com.example.todocompose.presentation
 
+import android.util.Log.d
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -28,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
 import com.example.todocompose.ui.ItemsProgressIndicator
+import com.example.todocompose.util.Constants.TAG
 import com.example.todocompose.util.Screen
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
@@ -35,19 +37,20 @@ import com.example.todocompose.util.Screen
 fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: NavController) {
 
     //thats it
-    val itemState by vm.itemState.collectAsState()
+    val itemState by vm.itemStateToDo.collectAsState()
+    d(TAG, "from composable 000000 ${itemState}")
 
 
-    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
+//    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
-    var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
+//    var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
 
-    val itemsLoading = vm.itemsLoading.value
+//    val itemsLoading = vm.itemsLoading.value
 
     var pressed by remember { mutableStateOf(true) } // for making blur
 
 
-    val animatedBlur by animateDpAsState(targetValue = if (pressed) 4.dp/*listCompose2.size.dp*/ else 0.dp)
+    val animatedBlur by animateDpAsState(targetValue = if (pressed) 4.dp else 0.dp)
 
     var shoppingTextFieldState by remember {
         mutableStateOf(TextFieldValue(""))
@@ -128,7 +131,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
             ) {
 
                 Text(
-                    text = if (vm.authResult.value != null) "買い物リスト-shopping list" else "NULL",
+                    text = "買い物リスト-shopping list",
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     color = Color.Black,
@@ -138,19 +141,36 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         .padding(top = 16.dp)
                         .clickable {
                             pressed = !pressed
-//                            vm.getRTShopItems555()
+//                            vm.getRTShopItems777()
 
                         })
 
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 64.dp)
+                        .weight(0.6f)
+                ) {
+                    items(itemState) { item ->
+                        ShopItemCard(shopItem = item!!, delete = {
+                            vm.removeShopItem(item.text!!)
+                        }, isDone = {
+                            vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
+                        })
+
+
+                    }
+                }
 
 
 
 
-                if (vm.authResult.value != null) {
 
-                    /////////////////////////////////////////////
-//                    here//
-                    when {
+
+
+                    /////////////////////////////////////////////----------------------------------------------------------------------------
+
+                    /*when {
                         itemState.isLoading -> {
                             Text(text = "Loading")
                             ItemsProgressIndicator(show = true)
@@ -159,7 +179,8 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                             Text(text = itemState.errorMsg!!)
                         }
                         itemState.data.isNullOrEmpty() -> {
-                            Text(text = "Empty")
+                            Text(text = "Empty123")
+                            d(TAG, "from composable12 ${itemState.data}")
                         }
                         !itemState.data.isNullOrEmpty() -> {
                             LazyColumn(
@@ -180,7 +201,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                             }
                         }
 
-                    }
+                    }*/
 
 
                     ///////////////////
@@ -202,12 +223,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 //                    })
 
 
-                } else {
-                    Text(
-                        text = "here will be displayed items from Room",
-                        modifier = Modifier.weight(0.6f)
-                    )
-                }
+
 
                 Row(
                     modifier = Modifier
