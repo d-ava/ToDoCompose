@@ -13,4 +13,6 @@ object Utils {
 //     val userToDo = authToDo.currentUser
 //     val userReferenceToDo = databaseReferenceToDo.child(userToDo?.uid!!)
 //     val db = Firebase.database.getReference(Constants.RTShop)
+
+
 }
