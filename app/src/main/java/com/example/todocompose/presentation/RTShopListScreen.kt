@@ -40,7 +40,6 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
     val itemState by vm.itemStateToDo.collectAsState()
 
 
-
 //    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
 
 //    var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
@@ -83,7 +82,7 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 
 
                     Text(
-                        text ="not working yet", //"user - ${vm.authResult.value}",
+                        text = "not working yet", //"user - ${vm.authResult.value}",
                         modifier = Modifier.padding(start = 8.dp, top = 4.dp)
                     )
 
@@ -145,59 +144,56 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         .weight(0.6f)
                 ) {
                     items(itemState) { item ->
-                        ShopItemCard(shopItem = item!!, delete = {
-                            vm.removeShopItem(item.text!!)
-                        }, isDone = {
-                            vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
-                        })
+                        ShopItemCard(shopItem = item!!,
+                            delete = {
+                                vm.removeShopItem(item.text!!)
+                            },
+                            isDone = {
+                                vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
+                            })
 
 
                     }
                 }
 
 
+                /////////////////////////////////////////////----------------------------------------------------------------------------
+
+                /*when {
+                    itemState.isLoading -> {
+                        Text(text = "Loading")
+                        ItemsProgressIndicator(show = true)
+                    }
+                    !itemState.isLoading && !itemState.errorMsg.isNullOrEmpty() -> {
+                        Text(text = itemState.errorMsg!!)
+                    }
+                    itemState.data.isNullOrEmpty() -> {
+                        Text(text = "Empty123")
+                        d(TAG, "from composable12 ${itemState.data}")
+                    }
+                    !itemState.data.isNullOrEmpty() -> {
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 64.dp)
+                                .weight(0.6f)
+                        ) {
+                            items(itemState.data!!) { item ->
+                                ShopItemCard(shopItem = item!!, delete = {
+                                    vm.removeShopItem(item.text!!)
+                                }, isDone = {
+                                    vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
+                                })
 
 
-
-
-
-                    /////////////////////////////////////////////----------------------------------------------------------------------------
-
-                    /*when {
-                        itemState.isLoading -> {
-                            Text(text = "Loading")
-                            ItemsProgressIndicator(show = true)
-                        }
-                        !itemState.isLoading && !itemState.errorMsg.isNullOrEmpty() -> {
-                            Text(text = itemState.errorMsg!!)
-                        }
-                        itemState.data.isNullOrEmpty() -> {
-                            Text(text = "Empty123")
-                            d(TAG, "from composable12 ${itemState.data}")
-                        }
-                        !itemState.data.isNullOrEmpty() -> {
-                            LazyColumn(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(top = 64.dp)
-                                    .weight(0.6f)
-                            ) {
-                                items(itemState.data!!) { item ->
-                                    ShopItemCard(shopItem = item!!, delete = {
-                                        vm.removeShopItem(item.text!!)
-                                    }, isDone = {
-                                        vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
-                                    })
-
-
-                                }
                             }
                         }
+                    }
 
-                    }*/
+                }*/
 
 
-                    ///////////////////
+                ///////////////////
 
 
 //                    LazyColumn(modifier = Modifier
@@ -214,8 +210,6 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
 //                            })
 //                        }
 //                    })
-
-
 
 
                 Row(

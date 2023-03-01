@@ -102,7 +102,7 @@ fun AuthScreen(navController: NavController, vm: RTShopListViewModel = hiltViewM
         )
         Button(
             onClick = {
-                vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
+//                vm.authUser(emailTextFieldState.text, passwordTextFieldState.text)
 
 
 
