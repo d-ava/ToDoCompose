@@ -1,30 +1,38 @@
+<!--
+  ~ Copyright (C) 2026 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-  <group android:scaleX="0.12234375"
-      android:scaleY="0.12234375"
-      android:translateX="22.68"
-      android:translateY="22.68">
-    <group>
-      <clip-path
-          android:pathData="M0,0h512v512h-512z"/>
-      <path
-          android:pathData="M0,0h512v512h-512z"
-          android:fillColor="#0000B1FF"/>
-      <path
-          android:pathData="M64,117h296v40h-296z"
-          android:fillColor="#fff"/>
-      <path
-          android:pathData="M192,157h40v205h-40z"
-          android:fillColor="#fff"/>
-      <path
-          android:pathData="M398,117h40v245h-40z"
-          android:fillColor="#fff"/>
-      <path
-          android:pathData="M315,279m-83,0a83,83 0,1 1,166 0a83,83 0,1 1,-166 0"
-          android:fillColor="#fff"/>
-    </group>
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+  <group android:scaleX="0.6111111"
+      android:scaleY="0.6111111"
+      android:translateX="99.55556"
+      android:translateY="99.55556">
+    <path
+        android:pathData="M60,0L452,0A60,60 0,0 1,512 60L512,452A60,60 0,0 1,452 512L60,512A60,60 0,0 1,0 452L0,60A60,60 0,0 1,60 0z"
+        android:fillColor="#16B8F3"/>
+    <path
+        android:pathData="M128,186L384,186A22,22 0,0 1,406 208L406,209A22,22 0,0 1,384 231L128,231A22,22 0,0 1,106 209L106,208A22,22 0,0 1,128 186z"
+        android:fillColor="#ffffff"/>
+    <path
+        android:pathData="M128,256L384,256A22,22 0,0 1,406 278L406,279A22,22 0,0 1,384 301L128,301A22,22 0,0 1,106 279L106,278A22,22 0,0 1,128 256z"
+        android:fillColor="#ffffff"/>
+    <path
+        android:pathData="M128,326L384,326A22,22 0,0 1,406 348L406,349A22,22 0,0 1,384 371L128,371A22,22 0,0 1,106 349L106,348A22,22 0,0 1,128 326z"
+        android:fillColor="#ffffff"/>
   </group>
 </vector>

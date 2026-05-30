@@ -1,6 +1,5 @@
 package com.example.todocompose.presentation
 
-import android.util.Log.d
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -18,112 +17,146 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
-import com.example.todocompose.ui.ItemsProgressIndicator
-import com.example.todocompose.util.Constants.TAG
-import com.example.todocompose.util.Screen
+import com.example.todocompose.util.GroupPreferences
+import com.google.firebase.messaging.FirebaseMessaging
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: NavController) {
+fun RTShopListScreen(navController: NavController) {
 
-    //thats it
+    val context = LocalContext.current
+    val groupCode = remember { GroupPreferences.getOrCreateGroupCode(context) }
+    val vm = remember { RTShopListViewModel(groupCode = groupCode) }
+
     val itemState by vm.itemStateToDo.collectAsState()
 
-
-//    val listCompose2 = vm.shopItemsCompose.value //<<<<<<<<<<<<<<<<<<<<<<<<<<<<that's the list
-
-//    var buttonState by remember { mutableStateOf("auth") } // test fro switching auth bottom sheet state
-
-//    val itemsLoading = vm.itemsLoading.value
-
-    var pressed by remember { mutableStateOf(true) } // for making blur
-
-
+    var pressed by remember { mutableStateOf(true) }
     val animatedBlur by animateDpAsState(targetValue = if (pressed) 4.dp else 0.dp)
 
-    var shoppingTextFieldState by remember {
-        mutableStateOf(TextFieldValue(""))
+    var shoppingTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
+    var showCodeDialog by remember { mutableStateOf(false) }
+    var newCodeInput by remember { mutableStateOf(TextFieldValue("")) }
+    var myToken by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (task.isSuccessful) myToken = task.result
+        }
     }
 
-    var emailTextFieldState by remember { mutableStateOf(TextFieldValue("david@gmail.com")) }
-    var passwordTextFieldState by remember { mutableStateOf(TextFieldValue("test123")) }
+    val sortedItems = remember(itemState) {
+        itemState.sortedWith(compareBy { it?.done })
+    }
 
-    //for bottom sheet
     val bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Collapsed)
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = bottomSheetState
-    )
+    val scaffoldState = rememberBottomSheetScaffoldState(bottomSheetState = bottomSheetState)
 
-
-
+    if (showCodeDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showCodeDialog = false
+                newCodeInput = TextFieldValue("")
+            },
+            title = { Text("Enter group code") },
+            text = {
+                Column {
+                    Text("Type a 6-digit code to join your partner's list, or generate a random one.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = newCodeInput,
+                        onValueChange = { if (it.text.length <= 6) newCodeInput = it },
+                        label = { Text("6-digit code") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true
+                    )
+                }
+            },
+            buttons = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(onClick = {
+                        newCodeInput = TextFieldValue((100000..999999).random().toString())
+                    }) {
+                        Text("Random")
+                    }
+                    Row {
+                        TextButton(onClick = {
+                            showCodeDialog = false
+                            newCodeInput = TextFieldValue("")
+                        }) {
+                            Text("Cancel")
+                        }
+                        TextButton(onClick = {
+                            if (newCodeInput.text.length == 6) {
+                                GroupPreferences.saveGroupCode(context, newCodeInput.text)
+                                showCodeDialog = false
+                                (context as? android.app.Activity)?.recreate()
+                            }
+                        }) {
+                            Text("Save")
+                        }
+                    }
+                }
+            }
+        )
+    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
         sheetContent = {
-
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(130.dp)
+                    .height(150.dp)
             ) {
-
-                Column() {
-
-
+                Column(modifier = Modifier.padding(8.dp, top = 12.dp)) {
+                    Text(text = "Your group code:$groupCode", fontSize = 12.sp, color = Color.White)
                     Text(
-                        text = "not working yet", //"user - ${vm.authResult.value}",
-                        modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                        text = groupCode,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 36.sp,
+                        color = Color.White,
+                        letterSpacing = 8.sp
                     )
-
-                    Row(modifier = Modifier.padding(top = 64.dp)) {
-
-                        Text(text = "sign out", fontWeight = FontWeight.Black, modifier = Modifier
-                            .padding(start = 8.dp)
-                            .clickable { })
-
-                        Text(text = "AUTH", modifier = Modifier
-                            .padding(start = 16.dp)
-                            .clickable {
-
-                                navController.navigate(route = Screen.Auth.route)
-                            })
+                    Text(
+                        text = "Share this code with your partner",
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.7f)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TextButton(onClick = { showCodeDialog = true }) {
+                        Text("Change code", color = Color.White)
                     }
-
                 }
-
-
             }
-
         },
-        sheetBackgroundColor = Color.Red,
-
+        sheetBackgroundColor = Color.DarkGray,
         sheetPeekHeight = 32.dp,
         sheetElevation = 16.dp,
-
-
-        ) {
+    ) {
 
         Box(modifier = Modifier.fillMaxWidth()) {
-
-
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
-                    text = "買い物リスト-shopping list",
+                    text = "დავთარი",
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     color = Color.Black,
@@ -131,94 +164,40 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                     modifier = Modifier
                         .blur(animatedBlur, edgeTreatment = BlurredEdgeTreatment.Unbounded)
                         .padding(top = 16.dp)
-                        .clickable {
-                            pressed = !pressed
-//                            vm.getRTShopItems777()
-
-                        })
+                        .clickable { pressed = !pressed }
+                )
 
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 64.dp)
+                        .padding(top = 8.dp)
                         .weight(0.6f)
                 ) {
-                    items(itemState) { item ->
-                        ShopItemCard(shopItem = item!!,
-                            delete = {
-                                vm.removeShopItem(item.text!!)
-                            },
-                            isDone = {
-                                vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
-                            })
-
-
-                    }
-                }
-
-
-                /////////////////////////////////////////////----------------------------------------------------------------------------
-
-                /*when {
-                    itemState.isLoading -> {
-                        Text(text = "Loading")
-                        ItemsProgressIndicator(show = true)
-                    }
-                    !itemState.isLoading && !itemState.errorMsg.isNullOrEmpty() -> {
-                        Text(text = itemState.errorMsg!!)
-                    }
-                    itemState.data.isNullOrEmpty() -> {
-                        Text(text = "Empty123")
-                        d(TAG, "from composable12 ${itemState.data}")
-                    }
-                    !itemState.data.isNullOrEmpty() -> {
-                        LazyColumn(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 64.dp)
-                                .weight(0.6f)
-                        ) {
-                            items(itemState.data!!) { item ->
-                                ShopItemCard(shopItem = item!!, delete = {
-                                    vm.removeShopItem(item.text!!)
-                                }, isDone = {
-                                    vm.addNewShopItem222(text = item.text!!, isDone = !item.done!!)
-                                })
-
-
-                            }
+                    items(
+                        items = sortedItems,
+                        key = { item -> item?.text ?: "" }
+                    ) { item ->
+                        Box(modifier = Modifier.animateItemPlacement()) {
+                            ShopItemCard(
+                                shopItem = item!!,
+                                delete = { vm.removeShopItem(item.text!!) },
+                                isDone = {
+                                    vm.addNewShopItem(
+                                        text = item.text!!,
+                                        isDone = !item.done!!,
+                                        senderToken = myToken
+                                    )
+                                }
+                            )
                         }
                     }
-
-                }*/
-
-
-                ///////////////////
-
-
-//                    LazyColumn(modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(top = 64.dp)
-//                        .weight(0.6f), content = {
-//                        items(listCompose2.size) { i ->
-//                            val item1 = listCompose2[i]
-//                            ShopItemCard(shopItem = item1, delete = {
-//                                vm.removeShopItem(item1.text!!)
-//                            }, isDone = {
-//
-//                                vm.addNewShopItem222(item1.text!!, isDone = !item1.done!!)
-//                            })
-//                        }
-//                    })
-
+                }
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 32.dp)
                 ) {
-
-
                     OutlinedTextField(
                         value = shoppingTextFieldState,
                         onValueChange = { shoppingTextFieldState = it },
@@ -237,55 +216,50 @@ fun RTShopListScreen(vm: RTShopListViewModel = hiltViewModel(), navController: N
                         },
                         singleLine = true,
                         placeholder = { Text(text = "enter text") },
-
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(
                             onDone = {
-
+                                if (shoppingTextFieldState.text.isNotEmpty()) {
+                                    vm.addNewShopItem(
+                                        text = shoppingTextFieldState.text,
+                                        isDone = false,
+                                        senderToken = myToken
+                                    )
+                                    shoppingTextFieldState = TextFieldValue("")
+                                }
                             }
                         ),
-
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .padding(8.dp)
                             .height(64.dp)
-
-
                     )
 
-                    Image(painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_baseline_double_arrow_24),
                         contentDescription = "double arrow",
-                        colorFilter = if (shoppingTextFieldState.text.isNotEmpty()) ColorFilter.tint(
-                            color = MaterialTheme.colors.primary
-                        ) else ColorFilter.tint(
-                            color = Color.LightGray
-                        ),
+                        colorFilter = if (shoppingTextFieldState.text.isNotEmpty())
+                            ColorFilter.tint(color = MaterialTheme.colors.primary)
+                        else
+                            ColorFilter.tint(color = Color.LightGray),
                         modifier = Modifier
-
                             .size(64.dp)
                             .fillMaxWidth(0.2f)
                             .clickable {
                                 if (shoppingTextFieldState.text.isNotEmpty()) {
-
-                                    vm.addNewShopItem222(
+                                    vm.addNewShopItem(
                                         text = shoppingTextFieldState.text,
-                                        isDone = false
+                                        isDone = false,
+                                        senderToken = myToken
                                     )
+                                    shoppingTextFieldState = TextFieldValue("")
                                 }
-                                shoppingTextFieldState = TextFieldValue("")
                             }
                             .align(Alignment.CenterVertically)
                             .padding(8.dp)
                     )
-
-
                 }
-
-
             }
         }
-
     }
-
-
 }

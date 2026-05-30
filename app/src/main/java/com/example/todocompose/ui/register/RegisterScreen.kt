@@ -9,38 +9,35 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.todocompose.R
-import com.example.todocompose.presentation.RTShopListViewModel
-import com.example.todocompose.ui.ItemsProgressIndicator
-import com.example.todocompose.util.Screen
 
 @Composable
-fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltViewModel()){
+fun RegisterScreen(navController: NavController) {
 
     var emailTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
     var passwordTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
     var repeatPasswordTextFieldState by remember { mutableStateOf(TextFieldValue("")) }
 
-    val loading2 = vm.itemsLoading.value
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp)
+    ) {
 
+        Text(
+            text = "BACK",
+            fontWeight = FontWeight.Light,
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .clickable { navController.popBackStack() }
+        )
 
-    ItemsProgressIndicator(show = loading2)
-
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(8.dp)) {
-
-
-
-        Text(text = "BACK", fontWeight = FontWeight.Light, modifier = Modifier
-            .padding(top = 16.dp)
-            .clickable {
-                navController.popBackStack()
-            })
-
-        Text(text = "Register user - NOT READY", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
+        Text(
+            text = "Register user - NOT READY",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 16.dp)
+        )
 
         OutlinedTextField(
             value = emailTextFieldState,
@@ -60,11 +57,10 @@ fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltV
                 )
             },
             singleLine = true,
-            label = { Text(text = "enter email")},
+            label = { Text(text = "enter email") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 64.dp)
-
                 .height(64.dp)
         )
 
@@ -78,7 +74,6 @@ fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltV
                 focusedLabelColor = MaterialTheme.colors.primary,
                 unfocusedLabelColor = MaterialTheme.colors.secondary,
                 disabledTextColor = MaterialTheme.colors.onPrimary
-
             ),
             leadingIcon = {
                 Icon(
@@ -86,12 +81,11 @@ fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltV
                     contentDescription = "icon"
                 )
             },
-            label = { Text(text = "enter password")},
+            label = { Text(text = "enter password") },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-
                 .height(64.dp)
         )
 
@@ -113,32 +107,20 @@ fun RegisterScreen(navController: NavController, vm: RTShopListViewModel = hiltV
                 )
             },
             singleLine = true,
-            label = { Text(text = "repeat password")},
+            label = { Text(text = "repeat password") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-
                 .height(64.dp)
         )
 
-
-
-
         Button(
-            onClick = {
-                      vm.testLoading()
-
-
-            }, modifier = Modifier
+            onClick = { },
+            modifier = Modifier
                 .padding(top = 16.dp)
-
                 .fillMaxWidth()
-        ) { Text(text = "Register") }
-
-
-
-
-
-
+        ) {
+            Text(text = "Register")
+        }
     }
 }
