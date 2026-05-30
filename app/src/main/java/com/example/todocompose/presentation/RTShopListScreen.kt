@@ -125,7 +125,7 @@ fun RTShopListScreen(navController: NavController) {
                     .height(150.dp)
             ) {
                 Column(modifier = Modifier.padding(8.dp, top = 12.dp)) {
-                    Text(text = "Your group code:$groupCode", fontSize = 12.sp, color = Color.White)
+                    Text(text = "Your group code: $groupCode", fontSize = 12.sp, color = Color.White)
                     Text(
                         text = groupCode,
                         fontWeight = FontWeight.Bold,
